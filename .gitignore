@@ -40,3 +40,10 @@ checkpoints/auxiliary/models/buffalo_l/*.onnx
 *.safetensors
 *.bin
 *.pth
+
+# 保留 ComfyUI-Whisper 的字体文件但忽略其他字体
+!custom_nodes/ComfyUI-Whisper/fonts/**/*.ttf
+!custom_nodes/ComfyUI-Whisper/fonts/**/*.otf
+!custom_nodes/ComfyUI-Whisper/fonts/**/*.ttc
+# 但排除一些特别大的字体文件
+custom_nodes/ComfyUI-Whisper/fonts/**/*wqy-zenhei.ttc
