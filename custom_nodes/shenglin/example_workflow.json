@@ -1,0 +1,110 @@
+{
+  "last_node_id": 6,
+  "last_link_id": 5,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "mtb/io.LoadAudio",
+      "pos": [308, 125],
+      "size": [315, 98],
+      "flags": {},
+      "order": 0,
+      "inputs": {
+        "filepath": "path/to/your/audio/file.mp3"
+      },
+      "properties": {}
+    },
+    {
+      "id": 2,
+      "type": "按秒计算音频时长",
+      "pos": [680, 125],
+      "size": [315, 126],
+      "flags": {},
+      "order": 1,
+      "inputs": {
+        "audio": ["*", 0],
+        "latent_window_size": 9,
+        "fps": 30
+      },
+      "properties": {}
+    },
+    {
+      "id": 3,
+      "type": "DownloadAndLoadFramePackModel",
+      "pos": [308, 300],
+      "size": [315, 126],
+      "flags": {},
+      "order": 2,
+      "inputs": {
+        "model": "lllyasviel/FramePackI2V_HY",
+        "base_precision": "bf16",
+        "quantization": "disabled"
+      },
+      "properties": {}
+    },
+    {
+      "id": 4,
+      "type": "Load Image",
+      "pos": [308, 500],
+      "size": [210, 300],
+      "flags": {},
+      "order": 3,
+      "inputs": {
+        "image": "path/to/your/reference/image.png"
+      },
+      "properties": {}
+    },
+    {
+      "id": 5,
+      "type": "Clip Vision Encode",
+      "pos": [600, 500],
+      "size": [300, 130],
+      "flags": {},
+      "order": 4,
+      "inputs": {
+        "clip_vision": "model_name.safetensors",
+        "image": ["*", 0]
+      },
+      "properties": {}
+    },
+    {
+      "id": 6,
+      "type": "FramePackSampler",
+      "pos": [950, 300],
+      "size": [400, 600],
+      "flags": {},
+      "order": 5,
+      "inputs": {
+        "model": ["*", 0],
+        "positive": ["*", 0],
+        "negative": ["*", 0],
+        "start_latent": ["*", 0],
+        "steps": 30,
+        "use_teacache": true,
+        "teacache_rel_l1_thresh": 0.15,
+        "cfg": 1.0,
+        "guidance_scale": 10.0,
+        "shift": 0.0,
+        "seed": 0,
+        "latent_window_size": 9,
+        "total_second_length": ["*", 0],
+        "gpu_memory_preservation": 6.0,
+        "sampler": "unipc_bh1",
+        "image_embeds": ["*", 0]
+      },
+      "properties": {},
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [1, 1, 0, 2, 0, "AUDIO"],
+    [2, 2, 0, 6, 12, "FLOAT"],
+    [3, 3, 0, 6, 0, "FramePackMODEL"],
+    [4, 4, 0, 5, 1, "IMAGE"],
+    [5, 5, 0, 6, 15, "CLIP_VISION_OUTPUT"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+} 

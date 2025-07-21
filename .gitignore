@@ -5,7 +5,13 @@ __pycache__/
 !/input/example.png
 /models/
 /temp/
-/custom_nodes/
+# 保留 custom_nodes 目录，但忽略其中的大文件
+custom_nodes/**/*.ckpt
+custom_nodes/**/*.safetensors
+custom_nodes/**/*.bin
+custom_nodes/**/*.pth
+custom_nodes/**/*.zip
+custom_nodes/**/*.onnx
 !custom_nodes/example_node.py.example
 extra_model_paths.yaml
 /.vs
