@@ -1,0 +1,180 @@
+{
+  "1": {
+    "inputs": {
+      "seed": 363,
+      "lips_expression": 1.5,
+      "inference_steps": 20,
+      "images": [
+        "2",
+        0
+      ],
+      "audio": [
+        "2",
+        1
+      ]
+    },
+    "class_type": "LatentSyncNode",
+    "_meta": {
+      "title": "LatentSync1.6 Node"
+    }
+  },
+  "2": {
+    "inputs": {
+      "mode": "normal",
+      "fps": 25,
+      "silent_padding_sec": 0.5,
+      "images": [
+        "6",
+        0
+      ],
+      "audio": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "VideoLengthAdjuster",
+    "_meta": {
+      "title": "Video Length Adjuster"
+    }
+  },
+  "4": {
+    "inputs": {
+      "text": "世界经济论坛总裁兼首席执行官博尔格·布伦德在会上坦言，世界正面临数十年来最复杂的地缘政治局势，而动荡正在影响全球经济增长。当下，战火与冲突在世界多地仍不时出现，而夏季达沃斯论坛在中国这片东方热土上如期召开，更显得意义非凡——它不仅是对全球经济的问诊把脉，更彰显了对创新与合作的坚定信念，传递出对和平与发展的共同期待。",
+      "top_p": 0.7,
+      "temperature": 0.9,
+      "repetition_penalty": 1.1,
+      "chunk_length": 400,
+      "max_new_tokens": 0,
+      "seed": 622336147079024,
+      "reference_audio_path": "/raid0/jfz/wav/output.mp3",
+      "reference_text": "",
+      "tts_engine": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "FishSpeechTTS",
+    "_meta": {
+      "title": "Fish-Speech TTS"
+    }
+  },
+  "5": {
+    "inputs": {
+      "video_root": "/mnt/raid0/shenglin/ComfyUI/input",
+      "label": "zhuchiren4",
+      "target_duration": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VideoConcatNode",
+    "_meta": {
+      "title": "Video Concat (By Duration)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "video": [
+        "5",
+        0
+      ],
+      "force_rate": 0,
+      "custom_width": 0,
+      "custom_height": 0,
+      "frame_load_cap": 0,
+      "skip_first_frames": 0,
+      "select_every_nth": 1,
+      "format": "Mochi"
+    },
+    "class_type": "VHS_LoadVideoPath",
+    "_meta": {
+      "title": "Load Video (Path) 🎥🅥🅗🅢"
+    }
+  },
+  "7": {
+    "inputs": {
+      "model": "openaudio-s1-mini/model.pth",
+      "decoder_model": "openaudio-s1-mini/codec.pth",
+      "device": "cuda",
+      "compile": false
+    },
+    "class_type": "FishSpeechLoader",
+    "_meta": {
+      "title": "Fish-Speech Loader"
+    }
+  },
+  "8": {
+    "inputs": {
+      "model": "large",
+      "language": "auto",
+      "audio": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "Apply Whisper",
+    "_meta": {
+      "title": "Apply Whisper"
+    }
+  },
+  "10": {
+    "inputs": {
+      "font_color": "red",
+      "font_family": "wqy-zenhei.ttc",
+      "font_size": 80,
+      "x_position": 100,
+      "y_position": 600,
+      "center_x": 24,
+      "center_y": true,
+      "video_fps": 24,
+      "images": [
+        "1",
+        0
+      ],
+      "alignment": [
+        "8",
+        2
+      ]
+    },
+    "class_type": "Add Subtitles To Frames",
+    "_meta": {
+      "title": "Add Subtitles To Frames"
+    }
+  },
+  "11": {
+    "inputs": {
+      "frame_rate": 25,
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "12": {
+    "inputs": {
+      "latent_window_size": 9,
+      "fps": 30,
+      "audio": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "按秒计算音频时长",
+    "_meta": {
+      "title": "按秒计算音频时长"
+    }
+  }
+}

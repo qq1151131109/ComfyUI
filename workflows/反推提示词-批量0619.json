@@ -1,0 +1,228 @@
+{
+  "id": "9e7b0338-c23f-46ca-ba4c-2f7637c05902",
+  "revision": 0,
+  "last_node_id": 10,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 10,
+      "type": "LoadImageListFromDir //Inspire",
+      "pos": [
+        -197.15391540527344,
+        256.7582702636719
+      ],
+      "size": [
+        315,
+        170
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "label": "图像",
+          "name": "IMAGE",
+          "shape": 6,
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            8
+          ]
+        },
+        {
+          "label": "遮罩",
+          "name": "MASK",
+          "shape": 6,
+          "type": "MASK",
+          "links": null
+        },
+        {
+          "name": "FILE PATH",
+          "shape": 6,
+          "type": "STRING",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-inspire-pack",
+        "ver": "0f38db4180ce7836a80765111b87d5b4376a7a45",
+        "Node name for S&R": "LoadImageListFromDir //Inspire"
+      },
+      "widgets_values": [
+        "input/111",
+        5,
+        0,
+        false
+      ]
+    },
+    {
+      "id": 4,
+      "type": "ShowText|pysssss",
+      "pos": [
+        197.81309509277344,
+        275.08111572265625
+      ],
+      "size": [
+        304.5310363769531,
+        218.3123016357422
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "文本",
+          "name": "text",
+          "type": "STRING",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "label": "字符串",
+          "name": "STRING",
+          "shape": 6,
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        "This photograph captures a young Asian woman with long, wavy black hair cascading over her shoulders, set against a softly blurred, green, natural background. She has fair, smooth skin and delicate features, with a subtle smile and soft, expressive eyes. She is wearing a white, sleeveless lace dress with intricate floral patterns, the fabric appearing light and airy. The lighting is soft and natural, highlighting her serene and ethereal beauty. Her hair is styled in loose waves, framing her face and adding a sense of movement and elegance. The background, with its out-of-focus foliage, suggests an outdoor setting, possibly a garden or park, bathed in gentle sunlight. The overall mood of the image is peaceful and dreamlike, emphasizing the subject's natural beauty and grace. The photograph is credited to \"COSMID\" in the lower right corner."
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Joy_caption_two_load",
+      "pos": [
+        -199.1869659423828,
+        73.53549194335938
+      ],
+      "size": [
+        357.947265625,
+        58
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "label": "JoyTwoPipeline",
+          "name": "JoyTwoPipeline",
+          "type": "JoyTwoPipeline",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui_slk_joy_caption_two",
+        "ver": "667751cab945bd8e9fb0be4d557d47e36821350a",
+        "Node name for S&R": "Joy_caption_two_load"
+      },
+      "widgets_values": [
+        "unsloth/Meta-Llama-3.1-8B-Instruct-bnb-4bit"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "Joy_caption_two",
+      "pos": [
+        222.9042205810547,
+        72.99000549316406
+      ],
+      "size": [
+        315,
+        126
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "joy_two_pipeline",
+          "name": "joy_two_pipeline",
+          "type": "JoyTwoPipeline",
+          "link": 1
+        },
+        {
+          "label": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "label": "STRING",
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui_slk_joy_caption_two",
+        "ver": "667751cab945bd8e9fb0be4d557d47e36821350a",
+        "Node name for S&R": "Joy_caption_two"
+      },
+      "widgets_values": [
+        "MidJourney",
+        "80",
+        false
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      1,
+      0,
+      "JoyTwoPipeline"
+    ],
+    [
+      3,
+      1,
+      0,
+      4,
+      0,
+      "STRING"
+    ],
+    [
+      8,
+      10,
+      0,
+      1,
+      1,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9090909090909091,
+      "offset": [
+        806.0403758860265,
+        176.3154051374693
+      ]
+    },
+    "frontendVersion": "1.16.8",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}

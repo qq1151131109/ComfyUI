@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  comfyui:
+    build: .
+    image: comfyui-complete:latest
+    container_name: comfyui
+    restart: unless-stopped
+    ports:
+      - "8188:8188"
+    volumes:
+      # 模型文件挂载（避免镜像过大）
+      - ./models:/app/ComfyUI/models
+      - ./input:/app/ComfyUI/input
+      - ./output:/app/ComfyUI/output
+      - ./workflows:/app/ComfyUI/workflows
+      # 如果需要持久化自定义节点的模型
+      - ./custom_nodes/ComfyUI-LatentSyncWrapper/checkpoints:/app/ComfyUI/custom_nodes/ComfyUI-LatentSyncWrapper/checkpoints
+      - ./custom_nodes/ComfyUI-GIMM-VFI/models:/app/ComfyUI/custom_nodes/ComfyUI-GIMM-VFI/models
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - COMMANDLINE_ARGS=--listen 0.0.0.0 --port 8188
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # 可选：添加一个模型下载服务
+  model-downloader:
+    build: 
+      context: .
+      dockerfile: Dockerfile.models
+    image: comfyui-models:latest
+    container_name: comfyui-models
+    volumes:
+      - ./models:/models
+    command: echo "Models container for volume creation"
+    profiles:
+      - models

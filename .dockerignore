@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# 输出文件
+output/
+temp/
+*.log
+
+# 开发文件
+.git/
+.gitignore
+.github/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 模型文件（可选，如果要包含在镜像中则注释掉）
+models/checkpoints/*
+models/vae/*
+models/loras/*
+models/embeddings/*
+models/controlnet/*
+models/upscale_models/*
+models/clip/*
+models/diffusers/*
+models/unet/*
+models/text_encoders/*
+
+# 但保留目录结构
+!models/checkpoints/.gitkeep
+!models/vae/.gitkeep
+!models/loras/.gitkeep
+
+# 临时文件
+*.tmp
+*.temp
+*.cache
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 文档
+*.md
+LICENSE
+docs/
+
+# 测试文件
+tests/
+test_*.py
+
+# 构建相关
+build/
+dist/
+*.egg-info/
+
+# 其他
+.env
+.env.local
+download_*.sh
+install_*.sh

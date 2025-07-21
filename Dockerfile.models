@@ -1,0 +1,14 @@
+# 专门用于打包模型的 Dockerfile（可选）
+FROM alpine:latest
+
+# 创建模型目录
+RUN mkdir -p /models
+
+# 复制模型文件
+COPY models /models
+
+# 这个容器只是为了创建包含模型的卷
+VOLUME ["/models"]
+
+# 保持容器运行
+CMD ["tail", "-f", "/dev/null"]

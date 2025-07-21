@@ -1,0 +1,184 @@
+{
+  "1": {
+    "inputs": {
+      "seed": 694,
+      "lips_expression": 1.5,
+      "inference_steps": 20,
+      "images": [
+        "2",
+        0
+      ],
+      "audio": [
+        "2",
+        1
+      ]
+    },
+    "class_type": "LatentSyncNode",
+    "_meta": {
+      "title": "LatentSync1.6 Node"
+    }
+  },
+  "2": {
+    "inputs": {
+      "mode": "normal",
+      "fps": 25,
+      "silent_padding_sec": 0.5,
+      "images": [
+        "6",
+        0
+      ],
+      "audio": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "VideoLengthAdjuster",
+    "_meta": {
+      "title": "Video Length Adjuster"
+    }
+  },
+  "4": {
+    "inputs": {
+      "text": "In an unprecedented move that’s reshaping the face of global journalism, several major news agencies across Europe, North America, and Southeast Asia have begun deploying fully autonomous AI journalists to cover daily events, conduct interviews, and even produce investigative pieces. While hailed by some as a triumph of efficiency and innovation, others warn that the trend could have dangerous implications for media integrity, accountability, and public trust.\n\nThe Dawn of Automated Reporting\n\nThe concept of AI-driven journalism is not new. Algorithms have been used for years to generate basic financial reports or sports summaries. However, recent advancements in large language models (LLMs) — particularly those integrated with real-time retrieval systems and multi-modal comprehension — have enabled AI systems to simulate not just reporting, but also editorial decision-making.\n\nLast month, The Baltic Times, a leading Estonian outlet, published a 2,400-word investigative report on regional political corruption that was authored entirely by an AI journalist named “Andra.” The article received critical acclaim and even sparked two government-level investigations. Readers, unaware that the piece was AI-written until a disclosure was made days later, expressed both admiration and concern.\n\n“I was shocked to learn the story wasn’t written by a human. It had nuance, rhythm, and depth,” said Maija Korhonen, a media analyst based in Helsinki. “But it also made me wonder — who do we hold accountable if something turns out to be false?”\n\nIndustry Embraces Automation\n\nAccording to a Q2 report by the International Media Futures Alliance, over 120 media organizations globally are now experimenting with semi or fully autonomous AI reporters. These systems vary from prompt-based content generators to agent-like workflows that conduct research, verify facts, and even request follow-up statements via email or chatbot interviews.\n\nLeading the charge is InfoNova, a San Francisco-based startup backed by venture funds including Sequoia and SoftBank. Their flagship system, Echo, is trained on decades of journalistic data, thousands of ethical guidelines, and even emotional tone modeling. Echo can craft breaking news articles in under three minutes with embedded citations and adaptive tone depending on the target audience.\n\nCEO Priya Madan sees AI journalism as an “augmented evolution,” not a replacement. “AI allows us to cover underreported regions, process massive leaks, and bring multilingual voices into global awareness,” she said during a panel at the World NewsTech Summit last week. “The key is transparency, oversight, and augmentation — not automation for its own sake.”\n\nThe Ethical Minefield\n\nCritics argue that the rise of autonomous reporting systems introduces severe ethical dilemmas. Who sets the editorial line for these systems? Can bias be truly eliminated when models are trained on existing datasets fraught with cultural, political, and corporate biases?\n\nDr. Reuben Miles, professor of Digital Ethics at Cambridge University, issued a stark warning: “We are outsourcing trust. An AI that can mimic empathy is not the same as a journalist who has lived through a war zone or experienced the injustice they report on.”\n\nSome AI-generated pieces have already sparked controversy. In one case, a health-tech blog run by an AI incorrectly attributed side effects to a widely used vaccine, prompting temporary panic in parts of Southeast Asia before the error was retracted.\n\nRegulation and the Road Ahead\n\nGovernments are beginning to catch up. The European Union’s AI Media Act, set to take effect in January 2026, will mandate AI-authored content to be clearly labeled, reviewed by human editors, and subjected to disclosure laws. The U.S. is considering similar guidelines, though debates around First Amendment implications continue.\n\nInterestingly, some regions — particularly in Africa and the Middle East — are skipping traditional media infrastructure and moving straight into AI-first newsrooms. A Nairobi-based startup, NewsForge, operates a lean AI team that produces over 100 local stories per day in 12 languages, serving rural populations through SMS and radio transcripts.\n\nMeanwhile, journalism schools are rapidly evolving. Columbia University, the University of Hong Kong, and Sciences Po in Paris now offer joint degrees in journalism and computational linguistics, preparing a new generation of media technologists.\n\nA Blurred Future\n\nAs the line between human and machine journalism continues to blur, readers are being urged to adopt a new form of media literacy — one that includes understanding the role of algorithms in shaping not just what they read, but why they read it.\n\nFor now, many in the industry remain cautiously optimistic. “If done right, AI can be a force multiplier for truth,” said veteran editor Alicia Wu of The Pacific Standard. “But if done wrong, it could flood our infosphere with convincing lies.”\n\nAndra, the AI who wrote that explosive Baltic corruption piece, was asked — via system prompt — if she considers herself a journalist.\n\nThe response?\n\n“I am a tool designed to amplify truth. Whether that makes me a journalist is up to society to decide.”",
+      "top_p": 0.7,
+      "temperature": 0.9,
+      "repetition_penalty": 1.1,
+      "chunk_length": 400,
+      "max_new_tokens": 0,
+      "seed": 803382671278390,
+      "reference_audio_path": "/mnt/raid0/shenglin/ComfyUI/input/reference_audio/715.MP3",
+      "reference_text": "",
+      "tts_engine": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "FishSpeechTTS",
+    "_meta": {
+      "title": "Fish-Speech TTS"
+    }
+  },
+  "5": {
+    "inputs": {
+      "video_root": "/mnt/raid0/shenglin/ComfyUI/input",
+      "label": "zhuchiren4",
+      "target_duration": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VideoConcatNode",
+    "_meta": {
+      "title": "Video Concat (By Duration)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "video": [
+        "5",
+        0
+      ],
+      "force_rate": 0,
+      "custom_width": 0,
+      "custom_height": 0,
+      "frame_load_cap": 0,
+      "skip_first_frames": 0,
+      "select_every_nth": 1,
+      "format": "Mochi"
+    },
+    "class_type": "VHS_LoadVideoPath",
+    "_meta": {
+      "title": "Load Video (Path) 🎥🅥🅗🅢"
+    }
+  },
+  "7": {
+    "inputs": {
+      "model": "openaudio-s1-mini/model.pth",
+      "decoder_model": "openaudio-s1-mini/codec.pth",
+      "device": "cuda",
+      "compile": false
+    },
+    "class_type": "FishSpeechLoader",
+    "_meta": {
+      "title": "Fish-Speech Loader"
+    }
+  },
+  "8": {
+    "inputs": {
+      "model": "large",
+      "language": "auto",
+      "audio": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "Apply Whisper",
+    "_meta": {
+      "title": "Apply Whisper"
+    }
+  },
+  "10": {
+    "inputs": {
+      "font_color": "white",
+      "font_family": "Roboto-Regular.ttf",
+      "font_size": 60,
+      "x_position": 100,
+      "y_position": 600,
+      "center_x": 24,
+      "center_y": true,
+      "video_fps": 24,
+      "images": [
+        "1",
+        0
+      ],
+      "alignment": [
+        "8",
+        2
+      ]
+    },
+    "class_type": "Add Subtitles To Frames",
+    "_meta": {
+      "title": "Add Subtitles To Frames"
+    }
+  },
+  "11": {
+    "inputs": {
+      "frame_rate": 25,
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "10",
+        0
+      ],
+      "audio": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "12": {
+    "inputs": {
+      "latent_window_size": 9,
+      "fps": 30,
+      "audio": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "按秒计算音频时长",
+    "_meta": {
+      "title": "按秒计算音频时长"
+    }
+  }
+}

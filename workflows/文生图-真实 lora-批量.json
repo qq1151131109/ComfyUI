@@ -1,0 +1,867 @@
+{
+  "last_node_id": 39,
+  "last_link_id": 38,
+  "nodes": [
+    {
+      "id": 13,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        1774.199951171875,
+        130
+      ],
+      "size": [
+        355.20001220703125,
+        106
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 19,
+          "label": "噪波生成"
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 20,
+          "label": "引导"
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 21,
+          "label": "采样器"
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 22,
+          "label": "Sigmas"
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 23,
+          "label": "Latent"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            16
+          ],
+          "label": "输出"
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": null,
+          "label": "降噪输出"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 25,
+      "type": "RandomNoise",
+      "pos": [
+        100,
+        954
+      ],
+      "size": [
+        315,
+        82
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            19
+          ],
+          "label": "噪波生成"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        56122941589635,
+        "randomize"
+      ]
+    },
+    {
+      "id": 11,
+      "type": "DualCLIPLoader",
+      "pos": [
+        100,
+        318
+      ],
+      "size": [
+        315,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            29
+          ],
+          "slot_index": 0,
+          "label": "CLIP"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DualCLIPLoader"
+      },
+      "widgets_values": [
+        "flux_text_encoders/t5xxl_fp16.safetensors",
+        "flux_text_encoders/clip_l.safetensors",
+        "flux"
+      ]
+    },
+    {
+      "id": 12,
+      "type": "UNETLoader",
+      "pos": [
+        100,
+        554
+      ],
+      "size": [
+        315,
+        82
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            28,
+            31
+          ],
+          "slot_index": 0,
+          "label": "模型"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "flux1-dev.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 22,
+      "type": "BasicGuider",
+      "pos": [
+        1440.3651123046875,
+        178.7789764404297
+      ],
+      "size": [
+        241.79998779296875,
+        46
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 33,
+          "label": "模型"
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 26,
+          "label": "条件"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            20
+          ],
+          "label": "引导"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 30,
+      "type": "ModelSamplingFlux",
+      "pos": [
+        1017.9022216796875,
+        795.4880981445312
+      ],
+      "size": [
+        315,
+        130
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 28,
+          "label": "模型"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [],
+          "label": "模型"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ModelSamplingFlux"
+      },
+      "widgets_values": [
+        1.1500000000000001,
+        0.5,
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": 31,
+      "type": "LoraLoader",
+      "pos": [
+        511.4389343261719,
+        452.511962890625
+      ],
+      "size": [
+        315,
+        126
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 31,
+          "label": "模型"
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 29,
+          "label": "CLIP"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            32,
+            33
+          ],
+          "slot_index": 0,
+          "label": "模型"
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            36
+          ],
+          "slot_index": 1,
+          "label": "CLIP"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoader"
+      },
+      "widgets_values": [
+        "UltraRealPhoto.safetensors",
+        1,
+        1
+      ]
+    },
+    {
+      "id": 17,
+      "type": "BasicScheduler",
+      "pos": [
+        1307.1827392578125,
+        497.40679931640625
+      ],
+      "size": [
+        315,
+        106
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 32,
+          "label": "模型"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            22
+          ],
+          "label": "Sigmas"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "beta",
+        40,
+        1
+      ]
+    },
+    {
+      "id": 16,
+      "type": "KSamplerSelect",
+      "pos": [
+        100,
+        766
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            21
+          ],
+          "label": "采样器"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "dpmpp_2m"
+      ]
+    },
+    {
+      "id": 26,
+      "type": "FluxGuidance",
+      "pos": [
+        1015,
+        130
+      ],
+      "size": [
+        317.4000244140625,
+        58
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 35,
+          "label": "条件"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            26
+          ],
+          "label": "条件"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxGuidance"
+      },
+      "widgets_values": [
+        2.5
+      ]
+    },
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        2229.39990234375,
+        130
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 16,
+          "label": "Latent"
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 17,
+          "label": "VAE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            38
+          ],
+          "slot_index": 0,
+          "label": "图像"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 32,
+      "type": "StringConstantMultiline",
+      "pos": [
+        2019.6915283203125,
+        391.5325927734375
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            34
+          ],
+          "slot_index": 0,
+          "label": "字符串"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringConstantMultiline"
+      },
+      "widgets_values": [
+        "High-resolution photo, shot on a mobile phone, no visible artifacts, clear and sharp, American style",
+        false
+      ]
+    },
+    {
+      "id": 33,
+      "type": "BatchPromptSchedule",
+      "pos": [
+        2504.1689453125,
+        153.94271850585938
+      ],
+      "size": [
+        422.3963317871094,
+        749.25048828125
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 36,
+          "label": "CLIP"
+        },
+        {
+          "name": "pre_text",
+          "type": "STRING",
+          "link": 34,
+          "widget": {
+            "name": "pre_text"
+          },
+          "shape": 7,
+          "label": "预置文本"
+        },
+        {
+          "name": "app_text",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "app_text"
+          },
+          "shape": 7,
+          "label": "附加文本"
+        },
+        {
+          "name": "pw_a",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pw_a"
+          },
+          "shape": 7,
+          "label": "提示词权重A(pw_a)"
+        },
+        {
+          "name": "pw_b",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pw_b"
+          },
+          "shape": 7,
+          "label": "提示词权重B(pw_b)"
+        },
+        {
+          "name": "pw_c",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pw_c"
+          },
+          "shape": 7,
+          "label": "提示词权重C(pw_c)"
+        },
+        {
+          "name": "pw_d",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pw_d"
+          },
+          "shape": 7,
+          "label": "提示词权重D(pw_d)"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "POS",
+          "type": "CONDITIONING",
+          "links": [
+            35
+          ],
+          "slot_index": 0,
+          "label": "POS"
+        },
+        {
+          "name": "NEG",
+          "type": "CONDITIONING",
+          "links": null,
+          "label": "NEG"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BatchPromptSchedule"
+      },
+      "widgets_values": [
+        "\"0\": \"A serene lake surrounded by snow-capped mountains, reflecting the golden hues of sunrise under a clear sky with wisps of mist floating above the water.\",\n  \"1\": \"A lush green meadow dotted with vibrant wildflowers, with a majestic waterfall cascading down rocky cliffs in the background.\",\n  \"2\": \"A tranquil beach at sunset, the sky painted in vivid shades of orange, pink, and purple, as gentle waves lap against the shore.\",\n  \"3\": \"A dense forest illuminated by dappled sunlight streaming through tall ancient trees, with a winding path covered in fallen leaves.\",\n  \"4\": \"A desert landscape with towering golden sand dunes, casting dramatic shadows under a deep blue sky with a solitary bird soaring high.\",\n  \"5\": \"A tropical island with turquoise waters, a pristine white sandy beach lined with coconut palms, and a colorful coral reef visible through crystal-clear waves.\",\n  \"6\": \"A high-altitude plateau blanketed with lavender fields in full bloom, set against a backdrop of rugged mountains and a vibrant orange sunset.\",\n  \"7\": \"A tranquil Japanese garden featuring a red arched bridge over a koi pond, surrounded by cherry blossoms in full bloom and softly lit lanterns.\",\n  \"8\": \"A misty valley at dawn, with rolling hills covered in lush greenery and a river snaking through, reflecting the first light of the day.\",\n  \"9\": \"A rugged coastline with dramatic cliffs plunging into the ocean, waves crashing against the rocks under a sky filled with golden clouds at sunset.\",\n  \"10\": \"A peaceful alpine village nestled in a green valley, surrounded by towering snow-capped peaks under a bright, sunny sky.\",\n  \"11\": \"A vibrant autumn scene with trees in fiery shades of red, orange, and yellow, their reflections shimmering on the surface of a calm lake.\",\n  \"12\": \"A secluded mountain cabin surrounded by a forest blanketed in fresh snow, smoke curling from the chimney under a starry night sky with the northern lights above.\",\n  \"13\": \"A serene river winding through a lush rainforest, its banks lined with towering trees and vibrant tropical flowers, with birds soaring overhead.\",\n  \"14\": \"A golden wheat field stretching to the horizon, swaying gently in the breeze under a vivid blue sky dotted with fluffy white clouds.\",\n  \"15\": \"A picturesque vineyard on a sunlit hillside, rows of grapevines stretching into the distance with a rustic stone farmhouse at the center.\",\n  \"16\": \"A breathtaking canyon at sunset, its rugged red and orange rock formations glowing in the fading light with a river winding far below.\",\n  \"17\": \"A tranquil meadow with a small wooden bridge crossing a crystal-clear stream, surrounded by colorful wildflowers and framed by distant mountains.\",\n  \"18\": \"A vibrant coastal scene with pastel-colored fishing boats moored in a harbor, the water shimmering under the golden light of the setting sun.\",\n  \"19\": \"A magical scene of a lavender field under a twilight sky, stars beginning to twinkle above while the horizon glows faintly in soft orange and purple hues.\"",
+        120,
+        false,
+        "",
+        "",
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 27,
+      "type": "EmptySD3LatentImage",
+      "pos": [
+        2077.448974609375,
+        736.73876953125
+      ],
+      "size": [
+        315,
+        106
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            23
+          ],
+          "label": "Latent"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptySD3LatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        20
+      ]
+    },
+    {
+      "id": 38,
+      "type": "SaveImage",
+      "pos": [
+        2517.061767578125,
+        969.2918701171875
+      ],
+      "size": [
+        401.18267822265625,
+        63.447452545166016
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 38,
+          "label": "图像"
+        }
+      ],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "风景_%date:hhmmss%"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "VAELoader",
+      "pos": [
+        100,
+        130
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            17
+          ],
+          "label": "VAE"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "flux_ae.safetensors"
+      ]
+    }
+  ],
+  "links": [
+    [
+      16,
+      13,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      17,
+      10,
+      0,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      19,
+      25,
+      0,
+      13,
+      0,
+      "NOISE"
+    ],
+    [
+      20,
+      22,
+      0,
+      13,
+      1,
+      "GUIDER"
+    ],
+    [
+      21,
+      16,
+      0,
+      13,
+      2,
+      "SAMPLER"
+    ],
+    [
+      22,
+      17,
+      0,
+      13,
+      3,
+      "SIGMAS"
+    ],
+    [
+      23,
+      27,
+      0,
+      13,
+      4,
+      "LATENT"
+    ],
+    [
+      26,
+      26,
+      0,
+      22,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      28,
+      12,
+      0,
+      30,
+      0,
+      "MODEL"
+    ],
+    [
+      29,
+      11,
+      0,
+      31,
+      1,
+      "CLIP"
+    ],
+    [
+      31,
+      12,
+      0,
+      31,
+      0,
+      "MODEL"
+    ],
+    [
+      32,
+      31,
+      0,
+      17,
+      0,
+      "MODEL"
+    ],
+    [
+      33,
+      31,
+      0,
+      22,
+      0,
+      "MODEL"
+    ],
+    [
+      34,
+      32,
+      0,
+      33,
+      1,
+      "STRING"
+    ],
+    [
+      35,
+      33,
+      0,
+      26,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      36,
+      31,
+      1,
+      33,
+      0,
+      "CLIP"
+    ],
+    [
+      38,
+      8,
+      0,
+      38,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.620921323059155,
+      "offset": [
+        -413.58132505331236,
+        150.7267104322723
+      ]
+    }
+  },
+  "version": 0.4
+}
