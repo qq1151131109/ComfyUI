@@ -1,0 +1,11 @@
+descript-audiotools
+dac
+hydra-core
+tiktoken
+loralib
+soundfile
+pytorch-lightning
+lightning
+descript-audio-codec
+natsort
+loguru
