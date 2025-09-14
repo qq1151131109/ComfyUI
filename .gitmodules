@@ -1,0 +1,9 @@
+[submodule "custom_nodes/comfyui_LLM_party"]
+	path = custom_nodes/comfyui_LLM_party
+	url = https://github.com/qq1151131109/comfyui_LLM_party.git
+[submodule "custom_nodes/ComfyUI_IndexTTS"]
+	path = custom_nodes/ComfyUI_IndexTTS
+	url = https://github.com/qq1151131109/ComfyUI_IndexTTS.git
+[submodule "custom_nodes/ComfyUI-Manager"]
+	path = custom_nodes/ComfyUI-Manager
+	url = https://github.com/ltdrdata/ComfyUI-Manager.git
