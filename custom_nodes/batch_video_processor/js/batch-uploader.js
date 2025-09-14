@@ -236,8 +236,8 @@ app.registerExtension({
                     if (this.images && this.images.length > 0) {
                         // 如果有images输出，说明节点已执行，尝试构造下载链接
                         console.log("✅ 检测到节点已执行，尝试下载...");
-                        // 使用外网IP地址构造下载URL模式
-                        const baseUrl = "http://103.231.86.148:9000/view";
+                        // 动态获取当前访问的地址构造下载URL
+                        const baseUrl = `${window.location.protocol}//${window.location.host}/view`;
                         // 从images中获取filename，这通常包含我们生成的zip文件名
                         if (this.images[0] && this.images[0].filename) {
                             const filename = this.images[0].filename;
