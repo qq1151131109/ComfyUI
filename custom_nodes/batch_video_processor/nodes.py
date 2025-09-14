@@ -462,6 +462,1273 @@ class BatchVideoCutter(io.ComfyNode):
         return segments_created
 
 
+class VideoStaticCleaner(io.ComfyNode):
+    """视频静止片段清理器 - 自动检测并移除卡帧和静止片段"""
+    
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(
+            node_id="VideoStaticCleaner",
+            display_name="视频静止片段清理器",
+            category="batch_video",
+            description="自动检测并移除视频中的卡帧、静止片段，提升视频流畅度",
+            inputs=[
+                io.String.Input("video_folder", tooltip="视频文件夹路径"),
+                io.Float.Input("static_threshold", default=0.02, tooltip="静止判定阈值(0-1，越小越敏感)"),
+                io.Int.Input("min_static_duration", default=3, tooltip="最小静止时长(秒)"),
+                io.Bool.Input("enable_preview", default=True, tooltip="生成清理报告"),
+                io.String.Input("output_prefix", default="清理版", tooltip="输出前缀"),
+            ],
+            outputs=[
+                io.String.Output("output_folder", display_name="输出文件夹"),
+                io.Int.Output("processed_count", display_name="处理数量"),
+                io.String.Output("cleaning_report", display_name="清理报告"),
+            ],
+        )
+    
+    @classmethod
+    def execute(cls, video_folder, static_threshold=0.02, min_static_duration=3, 
+                enable_preview=True, output_prefix="清理版"):
+        import os
+        import time
+        import json
+        from pathlib import Path
+        
+        try:
+            # 验证输入文件夹
+            if not os.path.exists(video_folder):
+                raise ValueError(f"视频文件夹不存在: {video_folder}")
+            
+            # 扫描视频文件
+            video_files = []
+            for ext in ['.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv', '.webm', '.m4v']:
+                pattern = os.path.join(video_folder, f"*{ext}")
+                import glob
+                video_files.extend(glob.glob(pattern))
+                video_files.extend(glob.glob(pattern.upper()))
+            
+            if not video_files:
+                raise ValueError(f"在文件夹中未找到视频文件: {video_folder}")
+            
+            # 创建输出文件夹
+            timestamp = int(time.time())
+            output_folder = os.path.join(folder_paths.get_temp_directory(), f"{output_prefix}_静止清理_{timestamp}")
+            os.makedirs(output_folder, exist_ok=True)
+            
+            processed_count = 0
+            failed_files = []
+            cleaning_stats = []
+            
+            print(f"[视频静止片段清理器] 开始处理 {len(video_files)} 个视频文件")
+            print(f"[视频静止片段清理器] 静止阈值: {static_threshold}, 最小时长: {min_static_duration}秒")
+            
+            for video_file in video_files:
+                try:
+                    video_name = Path(video_file).stem
+                    output_filename = f"{video_name}_{output_prefix}.mp4"
+                    output_path = os.path.join(output_folder, output_filename)
+                    
+                    print(f"[视频静止片段清理器] 处理: {video_name}")
+                    
+                    # 检测静止片段
+                    static_segments = cls._detect_static_segments(
+                        video_file, static_threshold, min_static_duration
+                    )
+                    
+                    if static_segments:
+                        print(f"[视频静止片段清理器] {video_name}: 发现 {len(static_segments)} 个静止片段")
+                        
+                        # 移除静止片段并导出
+                        success = cls._export_video_without_segments(video_file, static_segments, output_path)
+                        
+                        if success:
+                            # 计算清理统计
+                            total_removed = sum(end - start for start, end in static_segments)
+                            original_duration = cls._get_video_duration(video_file)
+                            cleaned_duration = original_duration - total_removed if original_duration else 0
+                            
+                            cleaning_stats.append({
+                                "file": video_name,
+                                "original_duration": round(original_duration, 2),
+                                "cleaned_duration": round(cleaned_duration, 2),
+                                "removed_duration": round(total_removed, 2),
+                                "static_segments": len(static_segments),
+                                "compression_ratio": round((1 - total_removed / original_duration) * 100, 1) if original_duration > 0 else 0
+                            })
+                            
+                            processed_count += 1
+                            print(f"[视频静止片段清理器] 完成: {output_filename} (移除 {total_removed:.1f}秒)")
+                        else:
+                            failed_files.append(video_name)
+                            print(f"[视频静止片段清理器] 导出失败: {video_name}")
+                    else:
+                        # 没有静止片段，直接复制
+                        print(f"[视频静止片段清理器] {video_name}: 未发现静止片段，直接复制")
+                        import shutil
+                        shutil.copy2(video_file, output_path)
+                        
+                        original_duration = cls._get_video_duration(video_file)
+                        cleaning_stats.append({
+                            "file": video_name,
+                            "original_duration": round(original_duration, 2),
+                            "cleaned_duration": round(original_duration, 2),
+                            "removed_duration": 0,
+                            "static_segments": 0,
+                            "compression_ratio": 100.0
+                        })
+                        processed_count += 1
+                        
+                except Exception as e:
+                    failed_files.append(video_name)
+                    print(f"[视频静止片段清理器] 处理失败: {video_name}, 错误: {str(e)}")
+            
+            # 生成清理报告
+            report = cls._generate_cleaning_report(cleaning_stats, failed_files, enable_preview)
+            
+            # 保存报告到文件
+            if enable_preview:
+                report_path = os.path.join(output_folder, "cleaning_report.json")
+                with open(report_path, 'w', encoding='utf-8') as f:
+                    json.dump({
+                        "summary": report,
+                        "details": cleaning_stats,
+                        "failed_files": failed_files
+                    }, f, ensure_ascii=False, indent=2)
+            
+            print(f"[视频静止片段清理器] 处理完成: 成功 {processed_count}/{len(video_files)} 个文件")
+            
+            return io.NodeOutput(output_folder, processed_count, report)
+            
+        except Exception as e:
+            error_msg = f"视频静止片段清理器执行失败: {str(e)}"
+            print(f"[视频静止片段清理器] 错误: {error_msg}")
+            return io.NodeOutput("", 0, error_msg)
+    
+    @classmethod
+    def _detect_static_segments(cls, video_path, threshold=0.02, min_duration=3.0):
+        """检测静止片段 - 基于感知哈希"""
+        try:
+            import cv2
+            import imagehash
+            from PIL import Image
+            
+            cap = cv2.VideoCapture(video_path)
+            if not cap.isOpened():
+                return []
+            
+            # 获取视频信息
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            duration = frame_count / fps if fps > 0 else 0
+            
+            if duration == 0:
+                cap.release()
+                return []
+            
+            # 采样间隔（每秒采样）
+            sample_interval = 1.0
+            prev_hash = None
+            static_start = None
+            static_segments = []
+            
+            sample_time = 0.0
+            while sample_time < duration:
+                # 跳转到指定时间点
+                cap.set(cv2.CAP_PROP_POS_MSEC, sample_time * 1000)
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                
+                # 计算感知哈希
+                cur_hash = cls._phash_frame_hd(frame)
+                
+                if prev_hash is not None:
+                    # 计算归一化汉明距离
+                    distance = (prev_hash - cur_hash) / float(cur_hash.hash.size)
+                    
+                    if distance <= threshold:  # 静止
+                        if static_start is None:
+                            static_start = sample_time
+                    else:  # 有变化
+                        if static_start is not None:
+                            static_duration = sample_time - static_start
+                            if static_duration >= min_duration:
+                                static_segments.append((static_start, sample_time))
+                        static_start = None
+                
+                prev_hash = cur_hash
+                sample_time += sample_interval
+            
+            # 处理视频结尾的静止片段
+            if static_start is not None:
+                if duration - static_start >= min_duration:
+                    static_segments.append((static_start, duration))
+            
+            cap.release()
+            return static_segments
+            
+        except Exception as e:
+            print(f"[视频静止片段清理器] 静止片段检测失败: {str(e)}")
+            return []
+    
+    @classmethod
+    def _phash_frame_hd(cls, frame):
+        """高精度感知哈希"""
+        try:
+            import cv2
+            import imagehash
+            from PIL import Image
+            
+            # 转为灰度图
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            
+            # CLAHE增强对比度
+            gray_single = cv2.cvtColor(gray, cv2.COLOR_RGB2GRAY)
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            eq = clahe.apply(gray_single)
+            
+            # Unsharp mask锐化
+            blur = cv2.GaussianBlur(eq, (3, 3), 0)
+            sharp = cv2.addWeighted(eq, 1.5, blur, -0.5, 0)
+            
+            # 转为PIL图像并计算哈希
+            pil_img = Image.fromarray(sharp)
+            return imagehash.phash(pil_img, hash_size=16, highfreq_factor=8)
+            
+        except Exception as e:
+            print(f"[视频静止片段清理器] 哈希计算失败: {str(e)}")
+            # 降级到简单哈希
+            try:
+                pil_img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                return imagehash.phash(pil_img)
+            except:
+                return None
+    
+    @classmethod
+    def _export_video_without_segments(cls, video_path, segments, output_path):
+        """使用FFmpeg移除静止片段"""
+        try:
+            import ffmpeg
+            
+            # 获取视频时长
+            duration = cls._get_video_duration(video_path)
+            if duration is None:
+                return False
+            
+            # 计算保留的时间段
+            keep_ranges = cls._invert_segments(segments, duration)
+            if not keep_ranges:
+                return False
+            
+            # 构造select表达式
+            expr = '+'.join([f'between(t,{s},{e})' for s, e in keep_ranges])
+            
+            # 检查是否有音频流
+            has_audio = cls._has_audio_stream(video_path)
+            
+            inp = ffmpeg.input(video_path)
+            
+            # 视频流处理
+            v = inp.video.filter('select', expr).filter('setpts', 'N/FRAME_RATE/TB')
+            
+            if has_audio:
+                # 音频流处理
+                a = inp.audio.filter('aselect', expr).filter('asetpts', 'N/SR/TB')
+                out = ffmpeg.output(
+                    v, a, output_path,
+                    vcodec='libx264', acodec='aac', 
+                    preset='fast',
+                    **{'b:v': '2000k', 'b:a': '128k'}
+                )
+            else:
+                out = ffmpeg.output(
+                    v, output_path,
+                    vcodec='libx264', 
+                    preset='fast',
+                    **{'b:v': '2000k'}
+                )
+            
+            out = out.overwrite_output()
+            out.run(quiet=True)
+            
+            # 验证输出文件
+            return os.path.exists(output_path) and os.path.getsize(output_path) > 0
+            
+        except Exception as e:
+            print(f"[视频静止片段清理器] FFmpeg处理失败: {str(e)}")
+            return False
+    
+    @classmethod
+    def _get_video_duration(cls, video_path):
+        """获取视频时长"""
+        try:
+            import ffmpeg
+            probe = ffmpeg.probe(video_path)
+            return float(probe['format']['duration'])
+        except:
+            return None
+    
+    @classmethod
+    def _has_audio_stream(cls, video_path):
+        """检查视频是否有音频流"""
+        try:
+            import ffmpeg
+            probe = ffmpeg.probe(video_path)
+            for stream in probe.get('streams', []):
+                if stream.get('codec_type') == 'audio':
+                    return True
+            return False
+        except:
+            return False
+    
+    @classmethod
+    def _invert_segments(cls, segments, duration):
+        """将需要移除的时间段转换为需要保留的时间段"""
+        if not segments:
+            return [(0.0, duration)]
+        
+        segments = sorted(segments, key=lambda x: x[0])
+        keep = []
+        prev = 0.0
+        
+        for start, end in segments:
+            start = max(0.0, start)
+            end = min(duration, end)
+            if start > prev:
+                keep.append((prev, start))
+            prev = max(prev, end)
+        
+        if prev < duration:
+            keep.append((prev, duration))
+        
+        return [(round(s, 3), round(e, 3)) for s, e in keep if e - s > 0.1]
+    
+    @classmethod
+    def _generate_cleaning_report(cls, stats, failed_files, enable_preview):
+        """生成清理报告"""
+        if not stats and not failed_files:
+            return "未处理任何文件"
+        
+        total_files = len(stats) + len(failed_files)
+        successful_files = len(stats)
+        
+        if successful_files > 0:
+            total_original = sum(s['original_duration'] for s in stats)
+            total_removed = sum(s['removed_duration'] for s in stats)
+            avg_compression = sum(s['compression_ratio'] for s in stats) / successful_files
+            
+            report = f"""静止片段清理完成报告：
+✅ 成功处理: {successful_files}/{total_files} 个文件
+📊 时长统计: 原始 {total_original:.1f}秒 → 清理后 {total_original-total_removed:.1f}秒
+🗑️  移除时长: {total_removed:.1f}秒 ({(total_removed/total_original*100):.1f}%)
+📈 平均压缩率: {avg_compression:.1f}%"""
+            
+            if failed_files:
+                report += f"\n❌ 失败文件: {len(failed_files)} 个"
+        else:
+            report = f"处理失败: {len(failed_files)} 个文件未能成功处理"
+        
+        return report
+
+
+class GameHighlightExtractor(io.ComfyNode):
+    """游戏精彩片段提取器 - 基于模板匹配自动识别游戏局次"""
+    
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(
+            node_id="GameHighlightExtractor",
+            display_name="游戏精彩片段提取器",
+            category="batch_video",
+            description="基于模板匹配和OCR识别游戏开始/结束，自动提取完整游戏局次",
+            inputs=[
+                io.String.Input("video_folder", tooltip="视频文件夹路径"),
+                io.Image.Input("start_template", optional=True, tooltip="开始模板图片（可选）"),
+                io.Image.Input("end_template", optional=True, tooltip="结束模板图片（可选）"),
+                io.String.Input("start_keywords", default="开始,start,准备,ready,倒计时", tooltip="开始关键词（逗号分隔）"),
+                io.String.Input("end_keywords", default="结束,game over,胜利,victory,再来一局", tooltip="结束关键词（逗号分隔）"),
+                io.Float.Input("template_threshold", default=0.8, tooltip="模板匹配阈值(0-1)"),
+                io.Float.Input("ocr_confidence", default=0.7, tooltip="OCR识别置信度(0-1)"),
+                io.Int.Input("start_offset", default=0, tooltip="开始帧后延迟秒数"),
+                io.Int.Input("end_offset", default=0, tooltip="结束帧后延迟秒数"),
+                io.Int.Input("min_game_duration", default=10, tooltip="最小游戏时长(秒)"),
+                io.Int.Input("max_game_duration", default=300, tooltip="最大游戏时长(秒)"),
+                io.Bool.Input("enable_ocr", default=True, tooltip="启用OCR文字识别"),
+                io.String.Input("output_prefix", default="游戏局次", tooltip="输出前缀"),
+            ],
+            outputs=[
+                io.String.Output("output_folder", display_name="输出文件夹"),
+                io.Int.Output("total_sessions", display_name="游戏局次总数"),
+                io.String.Output("extraction_report", display_name="提取报告"),
+            ],
+        )
+    
+    @classmethod
+    def execute(cls, video_folder, start_template=None, end_template=None,
+                start_keywords="开始,start,准备,ready,倒计时", end_keywords="结束,game over,胜利,victory,再来一局",
+                template_threshold=0.8, ocr_confidence=0.7, start_offset=0, end_offset=0,
+                min_game_duration=10, max_game_duration=300, enable_ocr=True, output_prefix="游戏局次"):
+        
+        import os
+        import time
+        import json
+        from pathlib import Path
+        
+        try:
+            # 验证输入文件夹
+            if not os.path.exists(video_folder):
+                raise ValueError(f"视频文件夹不存在: {video_folder}")
+            
+            # 扫描视频文件
+            video_files = []
+            for ext in ['.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv', '.webm', '.m4v']:
+                pattern = os.path.join(video_folder, f"*{ext}")
+                import glob
+                video_files.extend(glob.glob(pattern))
+                video_files.extend(glob.glob(pattern.upper()))
+            
+            if not video_files:
+                raise ValueError(f"在文件夹中未找到视频文件: {video_folder}")
+            
+            # 处理模板图片
+            start_template_cv = cls._convert_image_to_cv(start_template) if start_template is not None else None
+            end_template_cv = cls._convert_image_to_cv(end_template) if end_template is not None else None
+            
+            # 处理关键词
+            start_words = [w.strip().lower() for w in start_keywords.split(',') if w.strip()]
+            end_words = [w.strip().lower() for w in end_keywords.split(',') if w.strip()]
+            
+            # 创建输出文件夹
+            timestamp = int(time.time())
+            output_folder = os.path.join(folder_paths.get_temp_directory(), f"{output_prefix}_提取_{timestamp}")
+            os.makedirs(output_folder, exist_ok=True)
+            
+            total_sessions = 0
+            extraction_stats = []
+            
+            print(f"[游戏精彩片段提取器] 开始处理 {len(video_files)} 个视频文件")
+            print(f"[游戏精彩片段提取器] 模板: 开始{'有' if start_template_cv is not None else '无'}, 结束{'有' if end_template_cv is not None else '无'}")
+            print(f"[游戏精彩片段提取器] 偏移: 开始+{start_offset}秒, 结束+{end_offset}秒")
+            
+            for video_file in video_files:
+                try:
+                    video_name = Path(video_file).stem
+                    print(f"[游戏精彩片段提取器] 处理视频: {video_name}")
+                    
+                    # 检测游戏事件
+                    events = []
+                    
+                    # 模板匹配检测
+                    if start_template_cv is not None or end_template_cv is not None:
+                        template_events = cls._detect_template_events(
+                            video_file, start_template_cv, end_template_cv, template_threshold
+                        )
+                        events.extend(template_events)
+                    
+                    # OCR文字识别检测
+                    if enable_ocr and (start_words or end_words):
+                        ocr_events = cls._detect_ocr_events(
+                            video_file, start_words, end_words, ocr_confidence
+                        )
+                        events.extend(ocr_events)
+                    
+                    if not events:
+                        print(f"[游戏精彩片段提取器] {video_name}: 未检测到游戏事件")
+                        continue
+                    
+                    # 合并和排序事件
+                    events = sorted(events, key=lambda x: x['time'])
+                    print(f"[游戏精彩片段提取器] {video_name}: 检测到 {len(events)} 个事件")
+                    
+                    # 配对游戏局次
+                    sessions = cls._pair_game_sessions(
+                        events, min_game_duration, max_game_duration, start_offset, end_offset
+                    )
+                    
+                    if not sessions:
+                        print(f"[游戏精彩片段提取器] {video_name}: 未找到有效的游戏局次")
+                        continue
+                    
+                    print(f"[游戏精彩片段提取器] {video_name}: 找到 {len(sessions)} 个游戏局次")
+                    
+                    # 创建视频输出目录
+                    video_output_dir = os.path.join(output_folder, video_name)
+                    os.makedirs(video_output_dir, exist_ok=True)
+                    
+                    # 提取游戏片段
+                    extracted_count = 0
+                    for i, session in enumerate(sessions):
+                        output_filename = f"game_session_{i+1:03d}.mp4"
+                        output_path = os.path.join(video_output_dir, output_filename)
+                        
+                        success = cls._extract_video_segment(
+                            video_file, session['start'], session['end'], output_path
+                        )
+                        
+                        if success:
+                            extracted_count += 1
+                            print(f"[游戏精彩片段提取器] 提取: {output_filename} ({session['duration']:.1f}秒)")
+                        else:
+                            print(f"[游戏精彩片段提取器] 提取失败: {output_filename}")
+                    
+                    # 统计信息
+                    extraction_stats.append({
+                        "file": video_name,
+                        "total_sessions": len(sessions),
+                        "extracted_sessions": extracted_count,
+                        "total_duration": sum(s['duration'] for s in sessions),
+                        "events_detected": len(events)
+                    })
+                    
+                    total_sessions += extracted_count
+                    
+                except Exception as e:
+                    print(f"[游戏精彩片段提取器] 处理失败: {video_name}, 错误: {str(e)}")
+            
+            # 生成提取报告
+            report = cls._generate_extraction_report(extraction_stats)
+            
+            # 保存详细报告
+            report_path = os.path.join(output_folder, "extraction_report.json")
+            with open(report_path, 'w', encoding='utf-8') as f:
+                json.dump({
+                    "summary": report,
+                    "details": extraction_stats,
+                    "settings": {
+                        "start_offset": start_offset,
+                        "end_offset": end_offset,
+                        "min_game_duration": min_game_duration,
+                        "max_game_duration": max_game_duration,
+                        "template_threshold": template_threshold,
+                        "ocr_confidence": ocr_confidence
+                    }
+                }, f, ensure_ascii=False, indent=2)
+            
+            print(f"[游戏精彩片段提取器] 处理完成: 共提取 {total_sessions} 个游戏局次")
+            
+            return io.NodeOutput(output_folder, total_sessions, report)
+            
+        except Exception as e:
+            error_msg = f"游戏精彩片段提取器执行失败: {str(e)}"
+            print(f"[游戏精彩片段提取器] 错误: {error_msg}")
+            return io.NodeOutput("", 0, error_msg)
+    
+    @classmethod
+    def _convert_image_to_cv(cls, image_tensor):
+        """将ComfyUI图像张量转换为OpenCV格式"""
+        try:
+            import cv2
+            import numpy as np
+            import torch
+            
+            if image_tensor is None:
+                return None
+            
+            # ComfyUI图像格式: [batch, height, width, channels] (0-1 float)
+            if isinstance(image_tensor, torch.Tensor):
+                # 取第一个batch
+                img_array = image_tensor[0].cpu().numpy()
+            else:
+                img_array = image_tensor[0] if len(image_tensor.shape) == 4 else image_tensor
+            
+            # 转换为0-255范围
+            if img_array.max() <= 1.0:
+                img_array = (img_array * 255).astype(np.uint8)
+            
+            # 转换为BGR格式 (OpenCV默认)
+            if len(img_array.shape) == 3 and img_array.shape[2] == 3:
+                # RGB to BGR
+                img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+            
+            return img_array
+            
+        except Exception as e:
+            print(f"[游戏精彩片段提取器] 图像转换失败: {str(e)}")
+            return None
+    
+    @classmethod
+    def _detect_template_events(cls, video_path, start_template, end_template, threshold):
+        """模板匹配检测游戏事件"""
+        try:
+            import cv2
+            
+            cap = cv2.VideoCapture(video_path)
+            events = []
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            frame_count = 0
+            
+            # 每秒检测一次
+            sample_interval = max(1, int(fps))
+            
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                
+                frame_count += 1
+                if frame_count % sample_interval != 0:
+                    continue
+                
+                current_time = frame_count / fps
+                
+                # 检测开始模板
+                if start_template is not None:
+                    result = cv2.matchTemplate(frame, start_template, cv2.TM_CCOEFF_NORMED)
+                    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+                    
+                    if max_val >= threshold:
+                        events.append({
+                            "time": current_time,
+                            "event": "start",
+                            "method": "template",
+                            "template": "start_template",
+                            "confidence": max_val
+                        })
+                
+                # 检测结束模板
+                if end_template is not None:
+                    result = cv2.matchTemplate(frame, end_template, cv2.TM_CCOEFF_NORMED)
+                    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+                    
+                    if max_val >= threshold:
+                        events.append({
+                            "time": current_time,
+                            "event": "end",
+                            "method": "template",
+                            "template": "end_template",
+                            "confidence": max_val
+                        })
+            
+            cap.release()
+            return events
+            
+        except Exception as e:
+            print(f"[游戏精彩片段提取器] 模板检测失败: {str(e)}")
+            return []
+    
+    @classmethod
+    def _detect_ocr_events(cls, video_path, start_words, end_words, confidence_threshold):
+        """OCR文字识别检测游戏事件"""
+        try:
+            import cv2
+            import easyocr
+            
+            reader = easyocr.Reader(['ch_sim', 'en'])
+            cap = cv2.VideoCapture(video_path)
+            events = []
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            frame_count = 0
+            
+            # 每2秒检测一次（OCR较慢）
+            sample_interval = max(1, int(fps * 2))
+            
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                
+                frame_count += 1
+                if frame_count % sample_interval != 0:
+                    continue
+                
+                current_time = frame_count / fps
+                
+                try:
+                    # OCR识别
+                    results = reader.readtext(frame)
+                    
+                    for (bbox, text, confidence) in results:
+                        if confidence < confidence_threshold:
+                            continue
+                        
+                        text_lower = text.lower().strip()
+                        
+                        # 检测开始关键词
+                        if any(keyword in text_lower for keyword in start_words):
+                            events.append({
+                                "time": current_time,
+                                "event": "start",
+                                "method": "ocr",
+                                "text": text,
+                                "confidence": confidence
+                            })
+                        
+                        # 检测结束关键词
+                        elif any(keyword in text_lower for keyword in end_words):
+                            events.append({
+                                "time": current_time,
+                                "event": "end",
+                                "method": "ocr", 
+                                "text": text,
+                                "confidence": confidence
+                            })
+                
+                except Exception:
+                    continue
+            
+            cap.release()
+            return events
+            
+        except ImportError:
+            print("[游戏精彩片段提取器] 警告: easyocr未安装，跳过OCR检测")
+            return []
+        except Exception as e:
+            print(f"[游戏精彩片段提取器] OCR检测失败: {str(e)}")
+            return []
+    
+    @classmethod
+    def _pair_game_sessions(cls, events, min_duration, max_duration, start_offset, end_offset):
+        """配对游戏开始和结束事件"""
+        sessions = []
+        
+        # 合并相近的同类事件（去重）
+        merged_events = cls._merge_nearby_events(events, gap=3.0)
+        
+        i = 0
+        while i < len(merged_events) - 1:
+            current_event = merged_events[i]
+            
+            if current_event['event'] == 'start':
+                # 查找下一个结束事件
+                for j in range(i + 1, len(merged_events)):
+                    next_event = merged_events[j]
+                    
+                    if next_event['event'] == 'end':
+                        # 计算实际的开始和结束时间（应用偏移）
+                        actual_start = max(0, current_event['time'] + start_offset)
+                        actual_end = next_event['time'] + end_offset
+                        duration = actual_end - actual_start
+                        
+                        # 验证时长是否合理
+                        if min_duration <= duration <= max_duration:
+                            sessions.append({
+                                "start": actual_start,
+                                "end": actual_end,
+                                "duration": duration,
+                                "start_event": current_event,
+                                "end_event": next_event
+                            })
+                        
+                        i = j  # 跳到结束事件位置
+                        break
+                else:
+                    i += 1
+            else:
+                i += 1
+        
+        return sessions
+    
+    @classmethod
+    def _merge_nearby_events(cls, events, gap=3.0):
+        """合并时间相近的同类事件"""
+        if not events:
+            return events
+        
+        merged = []
+        events = sorted(events, key=lambda x: x['time'])
+        
+        current_event = events[0]
+        
+        for event in events[1:]:
+            # 如果是同类事件且时间相近，选择置信度更高的
+            if (event['event'] == current_event['event'] and 
+                event['time'] - current_event['time'] <= gap):
+                
+                if event.get('confidence', 0) > current_event.get('confidence', 0):
+                    current_event = event
+            else:
+                merged.append(current_event)
+                current_event = event
+        
+        merged.append(current_event)
+        return merged
+    
+    @classmethod
+    def _extract_video_segment(cls, video_path, start_time, end_time, output_path):
+        """提取视频片段"""
+        try:
+            import ffmpeg
+            
+            duration = end_time - start_time
+            
+            (
+                ffmpeg
+                .input(video_path, ss=start_time, t=duration)
+                .output(output_path, vcodec='libx264', acodec='aac', preset='fast')
+                .overwrite_output()
+                .run(quiet=True)
+            )
+            
+            # 验证输出文件
+            return os.path.exists(output_path) and os.path.getsize(output_path) > 0
+            
+        except Exception as e:
+            print(f"[游戏精彩片段提取器] 视频提取失败: {str(e)}")
+            return False
+    
+    @classmethod
+    def _generate_extraction_report(cls, stats):
+        """生成提取报告"""
+        if not stats:
+            return "未提取任何游戏局次"
+        
+        total_videos = len(stats)
+        successful_videos = len([s for s in stats if s['extracted_sessions'] > 0])
+        total_sessions = sum(s['extracted_sessions'] for s in stats)
+        total_duration = sum(s['total_duration'] for s in stats)
+        
+        report = f"""游戏精彩片段提取完成报告：
+🎮 处理视频: {successful_videos}/{total_videos} 个成功
+🎯 提取局次: {total_sessions} 个游戏局次
+⏱️ 总时长: {total_duration:.1f} 秒 ({total_duration/60:.1f} 分钟)
+📊 平均每视频: {total_sessions/successful_videos:.1f} 个局次"""
+        
+        if successful_videos < total_videos:
+            failed_videos = total_videos - successful_videos
+            report += f"\n❌ 失败视频: {failed_videos} 个"
+        
+        return report
+
+
+class VideoThumbnailGenerator(io.ComfyNode):
+    """视频缩略图生成器 - 智能生成视频封面，支持文字叠加和多尺寸输出"""
+    
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(
+            node_id="VideoThumbnailGenerator",
+            display_name="视频缩略图生成器",
+            category="batch_video",
+            description="智能选择精彩帧生成视频缩略图，支持文字叠加和统一模板",
+            inputs=[
+                io.String.Input("video_folder", tooltip="视频文件夹路径"),
+                io.String.Input("title_template", default="{filename}", tooltip="标题模板，支持{filename}, {index}, {duration}等变量"),
+                io.String.Input("font_path", optional=True, tooltip="字体文件路径（可选，使用默认字体）"),
+                io.Int.Input("font_size", default=48, tooltip="字体大小"),
+                io.String.Input("font_color", default="white", tooltip="字体颜色(white/black/red/blue等)"),
+                io.String.Input("outline_color", default="black", tooltip="字体描边颜色"),
+                io.Int.Input("outline_width", default=3, tooltip="字体描边宽度"),
+                io.String.Input("text_position", default="bottom-center", tooltip="文字位置(top-left/top-center/top-right/center/bottom-left/bottom-center/bottom-right)"),
+                io.String.Input("frame_selection", default="middle", tooltip="帧选择策略(first/middle/last/brightest/highest_contrast/most_colorful)"),
+                io.Float.Input("frame_offset", default=0.0, tooltip="帧偏移比例(0.0-1.0)"),
+                io.String.Input("output_sizes", default="1920x1080,1280x720,640x360", tooltip="输出尺寸列表(逗号分隔)"),
+                io.String.Input("output_format", default="jpg", tooltip="输出格式(jpg/png)"),
+                io.Int.Input("output_quality", default=90, tooltip="输出质量(1-100)"),
+                io.Bool.Input("add_gradient", default=True, tooltip="添加文字背景渐变"),
+                io.String.Input("output_prefix", default="缩略图", tooltip="输出前缀"),
+            ],
+            outputs=[
+                io.String.Output("output_folder", display_name="输出文件夹"),
+                io.Int.Output("generated_count", display_name="生成数量"),
+                io.String.Output("generation_report", display_name="生成报告"),
+            ],
+        )
+    
+    @classmethod
+    def execute(cls, video_folder, title_template="{filename}", font_path=None, font_size=48,
+                font_color="white", outline_color="black", outline_width=3, text_position="bottom-center",
+                frame_selection="middle", frame_offset=0.0, output_sizes="1920x1080,1280x720,640x360",
+                output_format="jpg", output_quality=90, add_gradient=True, output_prefix="缩略图"):
+        
+        import os
+        import time
+        import json
+        from pathlib import Path
+        
+        try:
+            # 验证输入文件夹
+            if not os.path.exists(video_folder):
+                raise ValueError(f"视频文件夹不存在: {video_folder}")
+            
+            # 扫描视频文件
+            video_files = []
+            for ext in ['.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv', '.webm', '.m4v']:
+                pattern = os.path.join(video_folder, f"*{ext}")
+                import glob
+                video_files.extend(glob.glob(pattern))
+                video_files.extend(glob.glob(pattern.upper()))
+            
+            if not video_files:
+                raise ValueError(f"在文件夹中未找到视频文件: {video_folder}")
+            
+            # 解析输出尺寸
+            try:
+                sizes = []
+                for size_str in output_sizes.split(','):
+                    size_str = size_str.strip()
+                    if 'x' in size_str:
+                        w, h = map(int, size_str.split('x'))
+                        sizes.append((w, h))
+                if not sizes:
+                    sizes = [(1920, 1080)]  # 默认尺寸
+            except:
+                sizes = [(1920, 1080)]  # 解析失败使用默认
+            
+            # 创建输出文件夹
+            timestamp = int(time.time())
+            output_folder = os.path.join(folder_paths.get_temp_directory(), f"{output_prefix}_生成_{timestamp}")
+            os.makedirs(output_folder, exist_ok=True)
+            
+            generated_count = 0
+            generation_stats = []
+            
+            print(f"[视频缩略图生成器] 开始处理 {len(video_files)} 个视频文件")
+            print(f"[视频缩略图生成器] 输出尺寸: {sizes}")
+            print(f"[视频缩略图生成器] 帧选择策略: {frame_selection}")
+            
+            for i, video_file in enumerate(video_files):
+                try:
+                    video_name = Path(video_file).stem
+                    print(f"[视频缩略图生成器] 处理视频: {video_name} ({i+1}/{len(video_files)})")
+                    
+                    # 获取视频信息
+                    video_info = cls._get_video_info(video_file)
+                    if not video_info:
+                        print(f"[视频缩略图生成器] 无法获取视频信息: {video_name}")
+                        continue
+                    
+                    duration = video_info.get('duration', 0)
+                    
+                    # 提取关键帧
+                    frame_time = cls._calculate_frame_time(duration, frame_selection, frame_offset)
+                    frame_image = cls._extract_frame(video_file, frame_time)
+                    
+                    if frame_image is None:
+                        print(f"[视频缩略图生成器] 帧提取失败: {video_name}")
+                        continue
+                    
+                    # 生成标题文字
+                    title_text = cls._generate_title(title_template, video_name, i+1, duration)
+                    
+                    # 生成不同尺寸的缩略图
+                    size_count = 0
+                    for width, height in sizes:
+                        try:
+                            # 调整图像尺寸
+                            resized_frame = cls._resize_frame(frame_image, width, height)
+                            
+                            # 添加文字叠加
+                            final_image = cls._add_text_overlay(
+                                resized_frame, title_text, font_path, font_size,
+                                font_color, outline_color, outline_width,
+                                text_position, add_gradient
+                            )
+                            
+                            # 保存缩略图
+                            output_filename = f"{video_name}_{width}x{height}.{output_format}"
+                            output_path = os.path.join(output_folder, output_filename)
+                            
+                            success = cls._save_image(final_image, output_path, output_format, output_quality)
+                            if success:
+                                size_count += 1
+                                print(f"[视频缩略图生成器] 生成: {output_filename}")
+                            else:
+                                print(f"[视频缩略图生成器] 保存失败: {output_filename}")
+                        
+                        except Exception as e:
+                            print(f"[视频缩略图生成器] 尺寸处理失败 {width}x{height}: {str(e)}")
+                    
+                    if size_count > 0:
+                        generation_stats.append({
+                            "file": video_name,
+                            "sizes_generated": size_count,
+                            "total_sizes": len(sizes),
+                            "title": title_text,
+                            "frame_time": frame_time,
+                            "duration": duration
+                        })
+                        generated_count += size_count
+                    
+                except Exception as e:
+                    print(f"[视频缩略图生成器] 处理失败: {video_name}, 错误: {str(e)}")
+            
+            # 生成报告
+            report = cls._generate_report(generation_stats, len(video_files), len(sizes))
+            
+            # 保存详细报告
+            report_path = os.path.join(output_folder, "generation_report.json")
+            with open(report_path, 'w', encoding='utf-8') as f:
+                json.dump({
+                    "summary": report,
+                    "details": generation_stats,
+                    "settings": {
+                        "title_template": title_template,
+                        "frame_selection": frame_selection,
+                        "output_sizes": output_sizes,
+                        "output_format": output_format,
+                        "font_size": font_size,
+                        "text_position": text_position
+                    }
+                }, f, ensure_ascii=False, indent=2)
+            
+            print(f"[视频缩略图生成器] 处理完成: 共生成 {generated_count} 张缩略图")
+            
+            return io.NodeOutput(output_folder, generated_count, report)
+            
+        except Exception as e:
+            error_msg = f"视频缩略图生成器执行失败: {str(e)}"
+            print(f"[视频缩略图生成器] 错误: {error_msg}")
+            return io.NodeOutput("", 0, error_msg)
+    
+    @classmethod
+    def _get_video_info(cls, video_path):
+        """获取视频基本信息"""
+        try:
+            import ffmpeg
+            probe = ffmpeg.probe(video_path)
+            video_stream = next(s for s in probe['streams'] if s['codec_type'] == 'video')
+            return {
+                'duration': float(probe['format']['duration']),
+                'width': int(video_stream['width']),
+                'height': int(video_stream['height']),
+                'fps': eval(video_stream['r_frame_rate'])
+            }
+        except Exception as e:
+            print(f"[视频缩略图生成器] 视频信息获取失败: {str(e)}")
+            return None
+    
+    @classmethod
+    def _calculate_frame_time(cls, duration, strategy, offset):
+        """计算要提取的帧时间点"""
+        if strategy == "first":
+            return max(0.1, duration * 0.01)  # 避免黑屏
+        elif strategy == "last":
+            return max(0, duration * 0.95)  # 避免结束黑屏
+        elif strategy == "middle":
+            return duration * 0.5
+        else:
+            # 对于其他策略，先使用中间位置，后续可以改为智能分析
+            return duration * (0.3 + offset * 0.4)  # 0.3-0.7范围
+    
+    @classmethod
+    def _extract_frame(cls, video_path, time_point):
+        """从视频中提取指定时间点的帧"""
+        try:
+            import cv2
+            
+            cap = cv2.VideoCapture(video_path)
+            if not cap.isOpened():
+                return None
+            
+            # 跳转到指定时间点
+            cap.set(cv2.CAP_PROP_POS_MSEC, time_point * 1000)
+            ret, frame = cap.read()
+            cap.release()
+            
+            if ret and frame is not None:
+                return frame
+            else:
+                return None
+                
+        except Exception as e:
+            print(f"[视频缩略图生成器] 帧提取失败: {str(e)}")
+            return None
+    
+    @classmethod
+    def _resize_frame(cls, frame, target_width, target_height):
+        """调整帧尺寸，保持宽高比"""
+        try:
+            import cv2
+            
+            h, w = frame.shape[:2]
+            
+            # 计算缩放比例
+            scale = min(target_width / w, target_height / h)
+            new_w = int(w * scale)
+            new_h = int(h * scale)
+            
+            # 缩放图像
+            resized = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
+            
+            # 创建目标尺寸的画布（黑色背景）
+            canvas = cv2.zeros((target_height, target_width, 3), dtype=resized.dtype)
+            
+            # 计算居中位置
+            x_offset = (target_width - new_w) // 2
+            y_offset = (target_height - new_h) // 2
+            
+            # 将缩放后的图像放到画布中心
+            canvas[y_offset:y_offset+new_h, x_offset:x_offset+new_w] = resized
+            
+            return canvas
+            
+        except Exception as e:
+            print(f"[视频缩略图生成器] 图像缩放失败: {str(e)}")
+            return frame
+    
+    @classmethod
+    def _generate_title(cls, template, filename, index, duration):
+        """生成标题文字"""
+        try:
+            # 可用变量
+            variables = {
+                'filename': Path(filename).stem,
+                'index': str(index),
+                'duration': f"{int(duration//60):02d}:{int(duration%60):02d}",
+                'duration_sec': str(int(duration))
+            }
+            
+            title = template
+            for var, value in variables.items():
+                title = title.replace(f'{{{var}}}', value)
+            
+            return title
+            
+        except Exception as e:
+            print(f"[视频缩略图生成器] 标题生成失败: {str(e)}")
+            return filename
+    
+    @classmethod
+    def _add_text_overlay(cls, image, text, font_path, font_size, font_color,
+                          outline_color, outline_width, position, add_gradient):
+        """添加文字叠加"""
+        try:
+            import cv2
+            import numpy as np
+            from PIL import Image, ImageDraw, ImageFont
+            
+            # 转换为PIL格式
+            pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            draw = ImageDraw.Draw(pil_image)
+            
+            # 加载字体
+            try:
+                if font_path and os.path.exists(font_path):
+                    font = ImageFont.truetype(font_path, font_size)
+                else:
+                    # 尝试使用系统字体
+                    font = ImageFont.load_default()
+                    # 如果可能，尝试加载更好的字体
+                    try:
+                        font = ImageFont.truetype("arial.ttf", font_size)
+                    except:
+                        pass
+            except:
+                font = ImageFont.load_default()
+            
+            # 获取文字尺寸
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
+            
+            # 计算文字位置
+            img_width, img_height = pil_image.size
+            x, y = cls._calculate_text_position(position, img_width, img_height, text_width, text_height)
+            
+            # 添加渐变背景
+            if add_gradient:
+                cls._add_text_gradient(draw, x, y, text_width, text_height, img_width, img_height)
+            
+            # 颜色映射
+            color_map = {
+                'white': (255, 255, 255),
+                'black': (0, 0, 0),
+                'red': (255, 0, 0),
+                'blue': (0, 0, 255),
+                'green': (0, 255, 0),
+                'yellow': (255, 255, 0)
+            }
+            
+            text_color = color_map.get(font_color.lower(), (255, 255, 255))
+            stroke_color = color_map.get(outline_color.lower(), (0, 0, 0))
+            
+            # 绘制文字（带描边）
+            draw.text((x, y), text, font=font, fill=text_color, 
+                     stroke_width=outline_width, stroke_fill=stroke_color)
+            
+            # 转换回OpenCV格式
+            return cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+            
+        except Exception as e:
+            print(f"[视频缩略图生成器] 文字叠加失败: {str(e)}")
+            return image
+    
+    @classmethod
+    def _calculate_text_position(cls, position, img_w, img_h, text_w, text_h):
+        """计算文字位置"""
+        margin = 20
+        
+        positions = {
+            'top-left': (margin, margin),
+            'top-center': (img_w // 2 - text_w // 2, margin),
+            'top-right': (img_w - text_w - margin, margin),
+            'center': (img_w // 2 - text_w // 2, img_h // 2 - text_h // 2),
+            'bottom-left': (margin, img_h - text_h - margin),
+            'bottom-center': (img_w // 2 - text_w // 2, img_h - text_h - margin),
+            'bottom-right': (img_w - text_w - margin, img_h - text_h - margin)
+        }
+        
+        return positions.get(position, positions['bottom-center'])
+    
+    @classmethod
+    def _add_text_gradient(cls, draw, x, y, text_w, text_h, img_w, img_h):
+        """添加文字背景渐变"""
+        try:
+            from PIL import Image, ImageDraw
+            import numpy as np
+            
+            # 创建渐变背景区域
+            gradient_height = text_h + 40
+            gradient_y = max(0, y - 20)
+            
+            # 创建渐变（从透明到半透明黑色）
+            gradient = Image.new('RGBA', (img_w, gradient_height), (0, 0, 0, 0))
+            gradient_draw = ImageDraw.Draw(gradient)
+            
+            for i in range(gradient_height):
+                alpha = int(100 * (i / gradient_height))  # 渐变透明度
+                color = (0, 0, 0, alpha)
+                gradient_draw.line([(0, i), (img_w, i)], fill=color)
+            
+            # 这里简化处理，直接绘制半透明矩形
+            overlay = Image.new('RGBA', (img_w, img_h), (0, 0, 0, 0))
+            overlay_draw = ImageDraw.Draw(overlay)
+            overlay_draw.rectangle([0, gradient_y, img_w, gradient_y + gradient_height], 
+                                 fill=(0, 0, 0, 80))
+            
+        except Exception as e:
+            print(f"[视频缩略图生成器] 渐变背景失败: {str(e)}")
+    
+    @classmethod
+    def _save_image(cls, image, output_path, format_type, quality):
+        """保存图像文件"""
+        try:
+            import cv2
+            
+            if format_type.lower() == 'png':
+                success = cv2.imwrite(output_path, image, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+            else:  # jpg
+                success = cv2.imwrite(output_path, image, [cv2.IMWRITE_JPEG_QUALITY, quality])
+            
+            return success and os.path.exists(output_path) and os.path.getsize(output_path) > 0
+            
+        except Exception as e:
+            print(f"[视频缩略图生成器] 图像保存失败: {str(e)}")
+            return False
+    
+    @classmethod
+    def _generate_report(cls, stats, total_videos, total_sizes):
+        """生成处理报告"""
+        if not stats:
+            return "未生成任何缩略图"
+        
+        successful_videos = len(stats)
+        total_generated = sum(s['sizes_generated'] for s in stats)
+        expected_total = total_videos * total_sizes
+        
+        report = f"""缩略图生成完成报告：
+🎨 处理视频: {successful_videos}/{total_videos} 个成功
+📸 生成缩略图: {total_generated}/{expected_total} 张
+📊 成功率: {(total_generated/expected_total*100):.1f}%
+⭐ 平均每视频: {total_generated/successful_videos:.1f} 张缩略图"""
+        
+        if successful_videos < total_videos:
+            failed_videos = total_videos - successful_videos
+            report += f"\n❌ 失败视频: {failed_videos} 个"
+        
+        return report
+
+
 class SmartAudioBasedCutter(io.ComfyNode):
     """批量视频切分器-按音频时长切分 - 根据音频和引流视频自动计算切分时长"""
     
@@ -2625,6 +3892,9 @@ class BatchVideoExtension(ComfyExtension):
             BatchLLMGenerator,          # 新增：批量文案生成器
             BatchTTSGenerator,          # 新增：批量TTS生成器
             SmartVideoCutterWithAudio,  # 新增：智能视频裁切+音频融合器
+            VideoStaticCleaner,         # 新增：视频静止片段清理器
+            GameHighlightExtractor,     # 新增：游戏精彩片段提取器
+            VideoThumbnailGenerator,    # 新增：视频缩略图生成器
             BatchVideoDownloader,
             BatchFileManager,
         ]
