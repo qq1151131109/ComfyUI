@@ -65,10 +65,15 @@ function selectFolder(callback) {
 }
 
 
-// 模拟上传过程（将文件信息传递给节点）
+// 处理文件上传 - 使用ComfyUI原生API自动上传
 async function processFiles(files, nodeContext) {
     try {
-        // 显示处理状态
+        // 生成会话文件夹名称
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 19).replace('T', '_').replace(/:/g, '-');
+        const sessionFolder = `batch_upload_${timestamp}`;
+        
+        // 显示上传进度
         const statusElement = document.createElement("div");
         statusElement.style.cssText = `
             position: fixed;
@@ -77,59 +82,97 @@ async function processFiles(files, nodeContext) {
             transform: translateX(-50%);
             background: #007acc;
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 15px 25px;
+            border-radius: 8px;
             z-index: 10000;
             font-family: Arial, sans-serif;
+            min-width: 300px;
+            text-align: center;
         `;
-        statusElement.textContent = `正在处理 ${files.length} 个素材文件...`;
+        statusElement.innerHTML = `
+            <div>正在上传 ${files.length} 个文件...</div>
+            <div style="margin-top: 10px; font-size: 12px;">会话: ${sessionFolder}</div>
+        `;
         document.body.appendChild(statusElement);
         
-        // 生成会话名称
-        const now = new Date();
-        const timestamp = now.toISOString().slice(0, 19).replace('T', '_').replace(/:/g, '-');
-        const sessionName = `批量上传_${timestamp}`;
+        let uploadedCount = 0;
+        let failedCount = 0;
         
-        // 模拟处理延迟
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // 更新状态
-        statusElement.textContent = `处理完成！会话: ${sessionName}`;
-        statusElement.style.background = "#28a745";
-        
-        // 更新节点参数
-        if (nodeContext) {
-            // 设置会话名称
-            const sessionWidget = nodeContext.widgets.find(w => w.name === "session_name");
-            if (sessionWidget) {
-                sessionWidget.value = sessionName;
+        // 逐个上传文件
+        for (const file of files) {
+            try {
+                const formData = new FormData();
+                formData.append('image', file, file.name);
+                formData.append('type', 'input');
+                formData.append('subfolder', `batch_uploads/${sessionFolder}`);
+                
+                const response = await fetch('/upload/image', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    uploadedCount++;
+                    statusElement.innerHTML = `
+                        <div>上传进度: ${uploadedCount}/${files.length}</div>
+                        <div style="margin-top: 5px; font-size: 12px;">当前: ${file.name}</div>
+                        <div style="margin-top: 5px; font-size: 12px;">会话: ${sessionFolder}</div>
+                    `;
+                } else {
+                    failedCount++;
+                    console.warn(`上传失败: ${file.name}, 状态: ${response.status}`);
+                }
+            } catch (error) {
+                failedCount++;
+                console.error(`上传文件 ${file.name} 时出错:`, error);
             }
-            
-            // 设置为创建新会话模式
-            const modeWidget = nodeContext.widgets.find(w => w.name === "load_mode");
-            if (modeWidget) {
-                modeWidget.value = "创建新会话";
+        }
+        
+        // 显示完成状态
+        if (failedCount === 0) {
+            statusElement.style.background = "#28a745";
+            statusElement.innerHTML = `
+                <div>✅ 上传完成！</div>
+                <div style="margin-top: 5px; font-size: 12px;">成功: ${uploadedCount} 个文件</div>
+                <div style="margin-top: 5px; font-size: 12px;">会话: ${sessionFolder}</div>
+            `;
+        } else {
+            statusElement.style.background = "#ffc107";
+            statusElement.innerHTML = `
+                <div>⚠️ 部分上传完成</div>
+                <div style="margin-top: 5px; font-size: 12px;">成功: ${uploadedCount}, 失败: ${failedCount}</div>
+                <div style="margin-top: 5px; font-size: 12px;">会话: ${sessionFolder}</div>
+            `;
+        }
+        
+        // 自动设置节点参数
+        if (nodeContext && uploadedCount > 0) {
+            const pathWidget = nodeContext.widgets.find(w => w.name === "input_folder_path");
+            if (pathWidget) {
+                pathWidget.value = ""; // 清空路径，让节点自动查找最新会话
             }
             
             // 触发界面更新
             if (nodeContext.onResize) {
                 nodeContext.onResize(nodeContext.size);
             }
-            
-            console.log(`✅ 批量上传完成: ${files.length} 个文件 → 会话: ${sessionName}`);
         }
         
-        // 3秒后移除状态提示
+        console.log(`✅ 批量上传完成: ${uploadedCount} 成功, ${failedCount} 失败 → 会话: ${sessionFolder}`);
+        
+        // 5秒后移除状态提示
         setTimeout(() => {
             if (document.body.contains(statusElement)) {
                 document.body.removeChild(statusElement);
             }
-        }, 3000);
+        }, 5000);
         
     } catch (error) {
-        alert(`处理失败: ${error.message}`);
+        console.error('批量上传过程出错:', error);
+        alert(`上传失败: ${error.message}`);
     }
 }
+
 
 // 下载文件的函数
 function downloadFile(filePath, fileName) {
@@ -183,16 +226,39 @@ app.registerExtension({
                 
                 // 添加下载按钮
                 this.addWidget("button", "📥 下载压缩包", "download_archive", () => {
-                    // 检查节点是否已执行并有输出
-                    if (this.outputs && this.outputs[0] && this.outputs[0].widget) {
-                        const downloadPath = this.outputs[0].widget.value;
-                        if (downloadPath && downloadPath.trim() !== "") {
-                            const fileName = downloadPath.split('/').pop() || 'download.zip';
-                            downloadFile(downloadPath, fileName);
+                    // 检查节点是否已执行并有输出 - 通过UI显示的结果检查
+                    console.log("🐛 下载按钮被点击，检查节点状态...");
+                    console.log("🐛 节点对象:", this);
+                    console.log("🐛 节点images:", this.images);
+                    console.log("🐛 节点widgets_values:", this.widgets_values);
+                    
+                    // 方法1: 检查是否有images输出
+                    if (this.images && this.images.length > 0) {
+                        // 如果有images输出，说明节点已执行，尝试构造下载链接
+                        console.log("✅ 检测到节点已执行，尝试下载...");
+                        // 使用外网IP地址构造下载URL模式
+                        const baseUrl = "http://103.231.86.148:9000/view";
+                        // 从images中获取filename，这通常包含我们生成的zip文件名
+                        if (this.images[0] && this.images[0].filename) {
+                            const filename = this.images[0].filename;
+                            const downloadUrl = `${baseUrl}?filename=${encodeURIComponent(filename)}&type=output`;
+                            console.log(`🔗 构造下载链接: ${downloadUrl}`);
+                            
+                            // 直接打开下载链接
+                            const link = document.createElement('a');
+                            link.href = downloadUrl;
+                            link.download = filename;
+                            link.style.display = 'none';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            console.log(`✅ 开始下载: ${filename}`);
                         } else {
-                            alert("请先执行节点生成下载文件！");
+                            console.log("❌ 无法获取下载文件信息");
+                            alert("无法获取下载文件信息，请重新执行节点！");
                         }
                     } else {
+                        console.log("❌ 节点未执行或无输出");
                         alert("请先执行节点生成下载文件！");
                     }
                 });
@@ -203,4 +269,4 @@ app.registerExtension({
     }
 });
 
-console.log("✅ 简化批量上传组件已加载 - 直接调用系统对话框!");
+console.log("✅ 批量素材上传器已加载 - 一键上传，自动创建文件夹!");

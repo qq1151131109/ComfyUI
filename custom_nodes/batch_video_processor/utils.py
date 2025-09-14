@@ -46,24 +46,48 @@ def get_video_info(video_path: str) -> dict:
         return {}
 
 
-def scan_video_files(folder_path: str, extensions: List[str] = None) -> List[str]:
-    """扫描文件夹中的视频文件"""
+def scan_video_files(folder_path: str, extensions: List[str] = None, recursive: bool = True) -> List[str]:
+    """扫描文件夹中的视频文件
+    
+    Args:
+        folder_path: 要扫描的文件夹路径
+        extensions: 视频文件扩展名列表
+        recursive: 是否递归扫描子目录，默认True
+    """
     if extensions is None:
         extensions = ['mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv', 'm4v']
     
     video_files = []
-    for ext in extensions:
-        pattern = os.path.join(folder_path, f"*.{ext}")
-        video_files.extend(glob.glob(pattern))
-        # 同时支持大写扩展名
-        pattern = os.path.join(folder_path, f"*.{ext.upper()}")
-        video_files.extend(glob.glob(pattern))
+    
+    if recursive:
+        # 递归扫描所有子目录
+        for ext in extensions:
+            # 递归模式：使用 ** 通配符
+            pattern = os.path.join(folder_path, "**", f"*.{ext}")
+            video_files.extend(glob.glob(pattern, recursive=True))
+            # 同时支持大写扩展名
+            pattern = os.path.join(folder_path, "**", f"*.{ext.upper()}")
+            video_files.extend(glob.glob(pattern, recursive=True))
+    else:
+        # 非递归模式：只扫描当前目录
+        for ext in extensions:
+            pattern = os.path.join(folder_path, f"*.{ext}")
+            video_files.extend(glob.glob(pattern))
+            # 同时支持大写扩展名
+            pattern = os.path.join(folder_path, f"*.{ext.upper()}")
+            video_files.extend(glob.glob(pattern))
     
     return sorted(video_files)
 
 
-def scan_media_files(folder_path: str, file_types: List[str] = None) -> dict:
-    """扫描文件夹中的多媒体文件"""
+def scan_media_files(folder_path: str, file_types: List[str] = None, recursive: bool = True) -> dict:
+    """扫描文件夹中的多媒体文件
+    
+    Args:
+        folder_path: 要扫描的文件夹路径
+        file_types: 要扫描的文件类型列表 ['video', 'audio', 'image']
+        recursive: 是否递归扫描子目录，默认True
+    """
     if file_types is None:
         file_types = ['video', 'audio', 'image']
     
@@ -83,11 +107,20 @@ def scan_media_files(folder_path: str, file_types: List[str] = None) -> dict:
             
         files = []
         for ext in extensions[file_type]:
-            pattern = os.path.join(folder_path, f"*.{ext}")
-            files.extend(glob.glob(pattern))
-            # 同时支持大写扩展名
-            pattern = os.path.join(folder_path, f"*.{ext.upper()}")
-            files.extend(glob.glob(pattern))
+            if recursive:
+                # 递归模式：使用 ** 通配符
+                pattern = os.path.join(folder_path, "**", f"*.{ext}")
+                files.extend(glob.glob(pattern, recursive=True))
+                # 同时支持大写扩展名
+                pattern = os.path.join(folder_path, "**", f"*.{ext.upper()}")
+                files.extend(glob.glob(pattern, recursive=True))
+            else:
+                # 非递归模式：只扫描当前目录
+                pattern = os.path.join(folder_path, f"*.{ext}")
+                files.extend(glob.glob(pattern))
+                # 同时支持大写扩展名
+                pattern = os.path.join(folder_path, f"*.{ext.upper()}")
+                files.extend(glob.glob(pattern))
         
         result[file_type] = sorted(files)
         total_files.extend(files)
@@ -213,11 +246,14 @@ def create_download_archive(source_folder: str, archive_name: str, archive_forma
     """创建下载压缩包"""
     try:
         output_dir = folder_paths.get_output_directory()
-        downloads_dir = os.path.join(output_dir, "downloads")
-        os.makedirs(downloads_dir, exist_ok=True)
+        # 直接使用output目录，避免子目录问题
+        print(f"🐛 调试: output_dir = {output_dir}")
         
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        archive_path = os.path.join(downloads_dir, f"{archive_name}_{timestamp}.{archive_format}")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") 
+        # 使用英文文件名，避免编码问题
+        safe_archive_name = "batch_result" if any(ord(c) > 127 for c in archive_name) else archive_name
+        archive_path = os.path.join(output_dir, f"{safe_archive_name}_{timestamp}.{archive_format}")
+        print(f"🐛 调试: archive_path = {archive_path}")
         
         file_count = 0
         total_size = 0
