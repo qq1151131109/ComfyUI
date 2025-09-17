@@ -24,3 +24,4 @@ web_custom_versions/
 openapi.yaml
 filtered-openapi.yaml
 uv.lock
+cudnn-local-repo-ubuntu2204-9.6.0_1.0-1_amd64.deb

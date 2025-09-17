@@ -1,0 +1,387 @@
+{
+  "id": "running2-simplified-version",
+  "revision": 0,
+  "last_node_id": 20,
+  "last_link_id": 25,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LLM_api_loader",
+      "pos": [865.9078979492188, -3235.88330078125],
+      "size": [270, 130],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "links": [1, 4, 8, 9, 10]
+        }
+      ],
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM_api_loader"
+      },
+      "widgets_values": [
+        "google/gemini-2.5-flash",
+        "https://openrouter.ai/api/v1",
+        "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",
+        false
+      ]
+    },
+    {
+      "id": 2,
+      "type": "LLM",
+      "pos": [1179.9119873046875, -3231.25830078125],
+      "size": [409.0315856933594, 662.6394653320312],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": [3, 5, 7]
+        }
+      ],
+      "title": "故事文案生成",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "请根据用户提供的主题生成历史类短视频文案",
+        "三打白骨精",
+        0.7
+      ]
+    },
+    {
+      "id": 4,
+      "type": "LLM",
+      "pos": [2209.511962890625, -3200.01806640625],
+      "size": [400, 566],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 9
+        },
+        {
+          "name": "user_prompt",
+          "type": "STRING",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": [6]
+        }
+      ],
+      "title": "分镜",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "你是专业的视频分镜师，将用户提供的故事文案按照JSON数组格式进行智能分镜，每个场景包含cap和desc_promopt字段。",
+        "你好",
+        0.7
+      ]
+    },
+    {
+      "id": 5,
+      "type": "LLM",
+      "pos": [2852.036376953125, -3170.411865234375],
+      "size": [406.3817443847656, 734.7020874023438],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 10
+        },
+        {
+          "name": "user_prompt",
+          "type": "STRING",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": [16]
+        }
+      ],
+      "title": "图像提示词生成",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "你是专业的AI绘画提示词生成师，优化用户提供的JSON数据中的图像提示词。",
+        "你好",
+        0.7
+      ]
+    },
+    {
+      "id": 16,
+      "type": "json_extractor",
+      "pos": [3400, -3100],
+      "size": [300, 150],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "STRING",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "name": "json_output",
+          "type": "STRING",
+          "links": [17]
+        }
+      ],
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "json_extractor"
+      },
+      "widgets_values": [true]
+    },
+    {
+      "id": 18,
+      "type": "easy forLoopStart",
+      "pos": [4200, -3000],
+      "size": [350, 200],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "initial_value1",
+          "type": "*",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "flow",
+          "type": "FLOW_CONTROL",
+          "links": [20]
+        },
+        {
+          "name": "index",
+          "type": "INT",
+          "links": [21]
+        },
+        {
+          "name": "value1",
+          "type": "*",
+          "links": [22]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-easy-use",
+        "ver": "1148fbe5fe0276780c56f0adfa22b96d5200d832",
+        "Node name for S&R": "easy forLoopStart"
+      },
+      "widgets_values": [9]
+    },
+    {
+      "id": 19,
+      "type": "json_get_value",
+      "pos": [4600, -2900],
+      "size": [300, 200],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 22
+        },
+        {
+          "name": "key",
+          "type": "STRING",
+          "widget": {
+            "name": "key"
+          },
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "any",
+          "type": "*",
+          "links": [23]
+        }
+      ],
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "json_get_value"
+      },
+      "widgets_values": ["", true]
+    },
+    {
+      "id": 20,
+      "type": "json_get_value",
+      "pos": [4600, -2600],
+      "size": [300, 200],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 23
+        }
+      ],
+      "outputs": [
+        {
+          "name": "any",
+          "type": "*",
+          "links": [24]
+        }
+      ],
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "json_get_value"
+      },
+      "widgets_values": ["desc_promopt", true]
+    },
+    {
+      "id": 21,
+      "type": "RHBatchProcessor",
+      "pos": [5000, -2600],
+      "size": [400, 364],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "batch_data",
+          "type": "STRING",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [25]
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": null
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "metadata",
+          "type": "LIST",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RHBatchProcessor"
+      },
+      "widgets_values": [
+        "97f34a75960340febb0d0d614f3031a2",
+        "https://api.runninghub.ai",
+        "1958005140101935106",
+        "",
+        "desc_promopt",
+        "",
+        3,
+        3600,
+        false,
+        "images"
+      ]
+    },
+    {
+      "id": 22,
+      "type": "PreviewImage",
+      "pos": [5500, -2600],
+      "size": [300, 300],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 25
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.56",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [1, 1, 0, 2, 0, "CUSTOM"],
+    [3, 2, 0, 3, 9, "STRING"],
+    [4, 1, 0, 3, 0, "CUSTOM"],
+    [5, 2, 0, 4, 9, "STRING"],
+    [6, 4, 0, 5, 9, "STRING"],
+    [7, 2, 0, 8, 9, "STRING"],
+    [8, 1, 0, 8, 0, "CUSTOM"],
+    [9, 1, 0, 4, 0, "CUSTOM"],
+    [10, 1, 0, 5, 0, "CUSTOM"],
+    [16, 5, 0, 16, 0, "STRING"],
+    [17, 16, 0, 18, 1, "STRING"],
+    [20, 18, 0, 23, 0, "FLOW_CONTROL"],
+    [21, 18, 1, 19, 1, "INT"],
+    [22, 18, 2, 19, 0, "STRING"],
+    [23, 19, 0, 20, 0, "STRING"],
+    [24, 20, 0, 21, 0, "STRING"],
+    [25, 21, 0, 22, 0, "IMAGE"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6,
+      "offset": [-3500, 3500]
+    },
+    "frontendVersion": "1.24.4"
+  },
+  "version": 0.4
+}

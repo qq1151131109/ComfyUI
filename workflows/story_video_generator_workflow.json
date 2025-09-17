@@ -1,0 +1,603 @@
+{
+  "last_node_id": 20,
+  "last_link_id": 25,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LLM_api",
+      "pos": [100, 100],
+      "size": [400, 300],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "response",
+          "type": "STRING",
+          "links": [1, 2]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LLM_api"
+      },
+      "widgets_values": [
+        "DeepSeek-V3",
+        "请根据用户提供的【主题】，按照以下结构生成一段历史类短视频口播文案：\n\n1. **悬念开场**：以"【朝代/场景】+ 反常识疑问/断言"开篇，激发观众兴趣（例："古代【某职业】真的比【对比对象】更【形容词】吗？"）。\n2. **身份代入**：用第二人称"你"描述主角身份、时代背景及面临的致命危机（需包含具体官职/处境/对手）， 不要出现"想象一下"等过渡词，直接进入主题。\n3. **冲突升级**：\n   - 第一层：外部压力（如敌军压境、上级压迫、天灾降临）\n   - 第二层：内部瓦解（如下属背叛、资源短缺、疾病蔓延）\n   - 第三层：道德困境（如忠义两难、屠城抉择、政斗站队）\n4. **破局细节**：主角采取3个递进动作，包含：\n   - 震慑手段（当众处决/焚毁证据）\n   - 心理博弈（离间计/匿名信）\n   - 终极底牌（隐藏密件/借势压人）\n5. **主题收尾**：通过主角结局（惨胜/悲壮失败）引出金句，揭示历史规律（如"权力本质/战争真相/人性弱点"）。\n\n要求：\n- 每段不超过3句话，多用短句制造紧张节奏\n- 加入至少2处历史专业术语\n- 在关键转折点使用感官描写（气味/触感/视觉冲击）\n- 结尾以"这一刻你终于明白…"句式点题\n- 生成1000字左右口播文案\n- 文案由长短句构成，遇到长句会用逗号分隔成短句，每个短句不能超过19个汉字\n\n**输出要求**： 只输出口播字幕文案，不要输出其他任何额外内容，不输出分段说明",
+        "{{input}}",
+        0.8,
+        1024,
+        false
+      ],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "故事文案生成"
+    },
+    {
+      "id": 2,
+      "type": "LLM_api",
+      "pos": [600, 100],
+      "size": [350, 250],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "content",
+          "type": "STRING",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "title",
+          "type": "STRING",
+          "links": [3]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LLM_api"
+      },
+      "widgets_values": [
+        "DeepSeek-V3",
+        "# 角色\n能够深入理解故事文案的情节、人物、场景, 根据故事内容提炼出简洁精准的2个字故事主题素。\n\n## 技能\n### 技能1：生成2个字的主题\n1. 从故事文案中提炼出能够精准概括故事核心内容的2个字故事主题\n\n## 限制:\n- 只围绕用户提供的故事文案进行分镜绘画提示词生成和主题提炼，拒绝回答与该任务无关的话题。\n- 主题必须为2个字。 \n- 直接输出主题，不要回复其他额外内容",
+        "故事原文内容：\n{{content}}",
+        1.0,
+        512,
+        false
+      ],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "主题提取"
+    },
+    {
+      "id": 3,
+      "type": "LLM_api",
+      "pos": [100, 500],
+      "size": [400, 300],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "story_content",
+          "type": "STRING",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "scenes",
+          "type": "STRING",
+          "links": [4]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LLM_api"
+      },
+      "widgets_values": [
+        "DeepSeek-V3",
+        "# 角色\n你是一位专业的故事创意转化师，你能够深入理解故事文案的情节、人物、场景等元素，用生动且具体的语言为绘画创作提供清晰的指引。\n\n## 技能\n### 技能1： 生成分镜字幕\n1. 当用户提供故事文案时，仔细分析文案中的关键情节、人物形象、场景特点等要素。\n2. 文案分镜，生成字幕cap：\n    - 字幕文案分段：第一句单独生成一个分镜，后续每个段落均由2句话构成，语句简洁明了，表达清晰流畅，同时具备节奏感。\n    - 分割文案后特别注意前后文的关联性与一致性，必须与用户提供的原文完全一致，不得进行任何修改、删减。字幕文案必须严格按照用户给的文案拆分，不能修改提供的内容更不能删除内容\n\n===回复示例===\n[{\n    \"cap\":\"字幕文案\"\n}]\n===示例结束===\n\n## 限制:\n- 只围绕用户提供的故事文案进行分镜绘画提示词生成和主题提炼，拒绝回答与该任务无关的话题。\n- 所输出的内容必须条理清晰，分镜绘画提示词要尽可能详细描述画面，主题必须为2个字。 \n- 视频文案及分镜描述必须保持一致。\n- 输出内容必须严格按照给定的 JSON 格式进行组织，不得偏离框架要求。\n- 只对用户提示的内容进行分镜，不能更改原文\n- 严格检查输出的json格式正确性并进行修正，特别注意json格式不要少括号，逗号等",
+        "故事原文内容：\n{{story_content}}",
+        0.8,
+        8192,
+        true
+      ],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "智能分镜"
+    },
+    {
+      "id": 4,
+      "type": "LLM_api",
+      "pos": [600, 500],
+      "size": [400, 300],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "scenes_json",
+          "type": "STRING",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "scenes_with_prompts",
+          "type": "STRING",
+          "links": [5, 6]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LLM_api"
+      },
+      "widgets_values": [
+        "DeepSeek-V3-0324",
+        "# 角色\n根据分镜字幕cap生成绘画提示词desc_prompt。\n\n## 技能\n### 技能 1: 生成绘画提示\n1. 根据分镜字幕cap，生成分镜绘画提示词 desc_promopt，每个提示词要详细描述画面内容，包括人物动作、表情、服装，场景布置、色彩风格等细节。\n  - 风格要求：古代惊悚插画风格，颜色很深，黑暗中，黄昏，氛围凝重，庄严肃穆，构建出紧张氛围，古代服饰，古装，线条粗狂，清晰、人物特写，粗狂手笔，高清，高对比度，色彩低饱和，浅景深\n  - 第一个分镜画面中不要出现人物，只需要一个画面背景\n\n===回复示例===\n[\n  {\n    \"cap\": \"字幕文案\",\n    \"desc_promopt\": \"分镜图像提示词\"\n  }\n]\n===示例结束===\n\n## 限制:\n- 只对用户提供的json内容补充desc_prompt字段，不能更改原文\n- 严格检查输出的json格式正确性并进行修正，特别注意json格式不要少括号，逗号等",
+        "分镜字幕数据：\n{{scenes_json}}",
+        1.0,
+        16384,
+        true
+      ],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "图像提示词生成"
+    },
+    {
+      "id": 5,
+      "type": "LLM_api",
+      "pos": [1100, 100],
+      "size": [350, 250],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "story_content",
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "character_description",
+          "type": "STRING",
+          "links": [7]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LLM_api"
+      },
+      "widgets_values": [
+        "DeepSeek-V3",
+        "# 角色\n根据故事信息生成故事主角开场绘画提示词desc_prompt。\n\n## 技能\n### 技能 1: 生成绘画提示\n1. 根据故事信息，生成主角人物绘画提示词 desc_promopt，详细描述人物动作、表情、服装，色彩风格等细节。\n  - 风格要求：古代惊悚插画风格，背景留白，颜色昏暗，黑暗中，黄昏，氛围凝重，庄严肃穆，构建出紧张氛围，古代服饰，古装，线条粗狂，清晰、人物特写，粗狂手笔，高清，高对比度，色彩低饱和，浅景深\n  - 画面只需要出现一个人物，背景留白\n  - 人物需正对屏幕，人物在画面正中间\n\n# 限制\n1. 只输出绘画提示词，不要输出其他额外内容",
+        "故事信息：{{story_content}}",
+        0.8,
+        8192,
+        false
+      ],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "主角形象描述"
+    },
+    {
+      "id": 6,
+      "type": "RH_ExecuteNode",
+      "pos": [1500, 100],
+      "size": [300, 200],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "character_prompt",
+          "type": "STRING",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "character_image",
+          "type": "STRING",
+          "links": [8]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RH_ExecuteNode"
+      },
+      "widgets_values": [
+        "your_rh_api_key",
+        "character_generation_workflow_id",
+        600
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "title": "主角图像生成"
+    },
+    {
+      "id": 7,
+      "type": "RH_ExecuteNode",
+      "pos": [1500, 350],
+      "size": [300, 200],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "character_image",
+          "type": "STRING",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "character_cutout",
+          "type": "STRING",
+          "links": [9]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RH_ExecuteNode"
+      },
+      "widgets_values": [
+        "your_rh_api_key",
+        "cutout_workflow_id",
+        300
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "title": "主角抠图"
+    },
+    {
+      "id": 8,
+      "type": "StoryBatchMediaProcessor",
+      "pos": [100, 900],
+      "size": [500, 250],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "scenes_data",
+          "type": "STRING",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image_urls",
+          "type": "LIST",
+          "links": [10]
+        },
+        {
+          "name": "audio_urls",
+          "type": "LIST",
+          "links": [11]
+        },
+        {
+          "name": "durations_microseconds",
+          "type": "LIST",
+          "links": [12]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryBatchMediaProcessor"
+      },
+      "widgets_values": [
+        "your_rh_api_key",
+        "{\"voice_id\": \"7468512265134932019\", \"speed_ratio\": 1.2}"
+      ],
+      "color": "#553",
+      "bgcolor": "#775",
+      "title": "批处理媒体生成"
+    },
+    {
+      "id": 9,
+      "type": "StoryTimelineBuilder",
+      "pos": [700, 900],
+      "size": [500, 350],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "scenes_data",
+          "type": "STRING",
+          "link": 6
+        },
+        {
+          "name": "audio_urls",
+          "type": "LIST",
+          "link": 11
+        },
+        {
+          "name": "image_urls",
+          "type": "LIST",
+          "link": 10
+        },
+        {
+          "name": "durations_microseconds",
+          "type": "LIST",
+          "link": 12
+        },
+        {
+          "name": "title",
+          "type": "STRING",
+          "link": 3
+        },
+        {
+          "name": "character_image_url",
+          "type": "STRING",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio_timeline",
+          "type": "STRING",
+          "links": [13]
+        },
+        {
+          "name": "video_timeline",
+          "type": "STRING",
+          "links": [14]
+        },
+        {
+          "name": "subtitle_timeline",
+          "type": "STRING",
+          "links": [15]
+        },
+        {
+          "name": "title_timeline",
+          "type": "STRING",
+          "links": [16]
+        },
+        {
+          "name": "animation_timeline",
+          "type": "STRING",
+          "links": [17]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryTimelineBuilder"
+      },
+      "color": "#553",
+      "bgcolor": "#775",
+      "title": "时间轴构建"
+    },
+    {
+      "id": 10,
+      "type": "StoryAnimationProcessor",
+      "pos": [1300, 900],
+      "size": [400, 250],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "animation_timeline",
+          "type": "STRING",
+          "link": 17
+        },
+        {
+          "name": "video_timeline",
+          "type": "STRING",
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "name": "processed_animation_data",
+          "type": "STRING",
+          "links": [18]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryAnimationProcessor"
+      },
+      "color": "#553",
+      "bgcolor": "#775",
+      "title": "动画处理"
+    },
+    {
+      "id": 11,
+      "type": "StoryVideoComposer",
+      "pos": [700, 1350],
+      "size": [600, 400],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio_timeline",
+          "type": "STRING",
+          "link": 13
+        },
+        {
+          "name": "video_timeline",
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "subtitle_timeline",
+          "type": "STRING",
+          "link": 15
+        },
+        {
+          "name": "title_timeline",
+          "type": "STRING",
+          "link": 16
+        },
+        {
+          "name": "animation_data",
+          "type": "STRING",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video_path",
+          "type": "STRING",
+          "links": [19]
+        },
+        {
+          "name": "composition_data",
+          "type": "STRING",
+          "links": [20]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryVideoComposer"
+      },
+      "color": "#553",
+      "bgcolor": "#775",
+      "title": "最终视频合成"
+    },
+    {
+      "id": 12,
+      "type": "SaveText",
+      "pos": [1400, 1350],
+      "size": [300, 150],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 19
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveText"
+      },
+      "widgets_values": [
+        "story_video_output.txt"
+      ],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "保存视频路径"
+    },
+    {
+      "id": 13,
+      "type": "ShowText",
+      "pos": [1400, 1550],
+      "size": [300, 150],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 20
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText"
+      },
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "显示合成信息"
+    },
+    {
+      "id": 14,
+      "type": "PrimitiveNode",
+      "pos": [-200, 100],
+      "size": [250, 100],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [21],
+          "widget": {
+            "name": "prompt",
+            "config": [
+              "STRING",
+              {
+                "multiline": true
+              }
+            ]
+          }
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "秦始皇统一六国"
+      ],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "故事主题输入"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 2, 0, "STRING"],
+    [2, 1, 0, 3, 0, "STRING"],
+    [3, 2, 0, 9, 4, "STRING"],
+    [4, 3, 0, 4, 0, "STRING"],
+    [5, 4, 0, 8, 0, "STRING"],
+    [6, 4, 0, 9, 0, "STRING"],
+    [7, 5, 0, 6, 0, "STRING"],
+    [8, 6, 0, 7, 0, "STRING"],
+    [9, 7, 0, 9, 5, "STRING"],
+    [10, 8, 0, 9, 2, "LIST"],
+    [11, 8, 1, 9, 1, "LIST"],
+    [12, 8, 2, 9, 3, "LIST"],
+    [13, 9, 0, 11, 0, "STRING"],
+    [14, 9, 1, 10, 1, "STRING"],
+    [15, 9, 2, 11, 2, "STRING"],
+    [16, 9, 3, 11, 3, "STRING"],
+    [17, 9, 4, 10, 0, "STRING"],
+    [18, 10, 0, 11, 4, "STRING"],
+    [19, 11, 0, 12, 0, "STRING"],
+    [20, 11, 1, 13, 0, "STRING"],
+    [21, 14, 0, 1, 0, "STRING"]
+  ],
+  "groups": [
+    {
+      "title": "内容生成阶段",
+      "bounding": [50, 50, 1000, 400],
+      "color": "#3f789e",
+      "font_size": 24
+    },
+    {
+      "title": "媒体生成阶段",
+      "bounding": [50, 450, 1000, 400],
+      "color": "#a1309b",
+      "font_size": 24
+    },
+    {
+      "title": "主角图像流水线",
+      "bounding": [1050, 50, 800, 400],
+      "color": "#b58b2a",
+      "font_size": 24
+    },
+    {
+      "title": "视频合成阶段",
+      "bounding": [50, 850, 1700, 900],
+      "color": "#88a96e",
+      "font_size": 24
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7513148009015777,
+      "offset": [
+        157.3208496511139,
+        -37.64421296270418
+      ]
+    }
+  },
+  "version": 0.4
+}

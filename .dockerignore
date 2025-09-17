@@ -1,0 +1,65 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# GitHub files
+.github/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+*.egg-info/
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# CI/CD
+.ci/
+
+# Test files
+tests/
+tests-unit/
+pytest.ini
+
+# Documentation
+*.md
+!README.md
+
+# Conda environment
+.conda/
+
+# Temporary files
+*.tmp
+*.log
+
+# Model files (exclude large files)
+*.ckpt
+*.safetensors
+*.pt
+*.pth
+*.bin
+*.onnx
+*.pb
+
+# Output/Input folders
+output/*
+input/*
+!output/.gitkeep
+!input/.gitkeep

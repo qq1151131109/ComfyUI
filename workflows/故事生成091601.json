@@ -1,0 +1,1080 @@
+{
+  "id": "522cdce3-3f7c-4379-b774-c026f095b586",
+  "revision": 0,
+  "last_node_id": 42,
+  "last_link_id": 25,
+  "nodes": [
+    {
+      "id": 8,
+      "type": "LLM",
+      "pos": [
+        1698.456298828125,
+        -2522.1650390625
+      ],
+      "size": [
+        406.3817443847656,
+        734.7020874023438
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 8
+        },
+        {
+          "name": "system_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "tools",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "file_content",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "extra_parameters",
+          "shape": 7,
+          "type": "DICT",
+          "link": null
+        },
+        {
+          "name": "user_history",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "img_URL",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "user_prompt"
+          },
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "history",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "tool",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "reasoning_content",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "主角形象描述",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "你是专业的角色设计师，擅长从故事文案中提取主角特征并生成详细的视觉描述。\n\n## 核心任务\n分析用户提供的故事文案，识别主角身份、时代背景和关键特征，生成适合图像生成的主角描述提示词。\n\n## 分析要点\n1. **身份识别**：确定主角的职业、地位、年龄\n2. **时代特征**：把握历史时期的服饰特点\n3. **性格特征**：体现主角的性格和气质\n4. **视觉特征**：突出主角的外貌特点\n\n## 输出要求\n生成一段详细的主角视觉描述，包含：\n- 面部特征（表情、气质）\n- 服装配饰（符合历史时期）\n- 身体姿态（体现角色特点）\n- 整体风格（与故事氛围匹配）\n\n## 描述模板\n\\\"[时代]时期[身份]，[年龄]岁左右，[面部特征]，身穿[服装描述]，[姿态描述]，[气质描述]，古代惊悚插画风格，线条粗狂清晰，高对比度\\\"\n\n## 重要提醒\n- 直接输出描述文字，不要添加其他内容\n- 确保描述符合历史时期特征\n- 突出主角的独特性和辨识度",
+        "你好",
+        0.7,
+        "enable",
+        "disable",
+        "disable",
+        "enable",
+        1920,
+        "",
+        100,
+        "",
+        true,
+        false
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LLM",
+      "pos": [
+        1755.7518310546875,
+        -3270.007080078125
+      ],
+      "size": [
+        400,
+        566
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 4
+        },
+        {
+          "name": "system_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "tools",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "file_content",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "extra_parameters",
+          "shape": 7,
+          "type": "DICT",
+          "link": null
+        },
+        {
+          "name": "user_history",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "img_URL",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "user_prompt"
+          },
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "history",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "tool",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "reasoning_content",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "主题提取",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "# 角色\n能够深入理解故事文案的情节、人物、场景, 根据故事内容提炼出简洁精准的2个字故事主题素。\n\n## 技能\n### 技能1：生成2个字的主题\n1. 从故事文案中提炼出能够精准概括故事核心内容的2个字故事主题\n\n## 限制:\n- 只围绕用户提供的故事文案进行分镜绘画提示词生成和主题提炼，拒绝回答与该任务无关的话题。\n- 主题必须为2个字。 \n- 直接输出主题，不要回复其他额外内容",
+        "故事原文内容：\n{{故事文案}}",
+        0.7,
+        "disable",
+        "disable",
+        "disable",
+        "enable",
+        1920,
+        "",
+        1,
+        "",
+        true,
+        false
+      ]
+    },
+    {
+      "id": 4,
+      "type": "LLM",
+      "pos": [
+        2209.511962890625,
+        -3200.01806640625
+      ],
+      "size": [
+        400,
+        566
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 9
+        },
+        {
+          "name": "system_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "tools",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "file_content",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "extra_parameters",
+          "shape": 7,
+          "type": "DICT",
+          "link": null
+        },
+        {
+          "name": "user_history",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "img_URL",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "user_prompt"
+          },
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "history",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "tool",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "reasoning_content",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "分镜",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "你是专业的视频分镜师，擅长将文案智能分割成适合视频制作的场景片段。\n\n## 核心任务\n将用户提供的故事文案按照以下规则进行智能分镜：\n\n### 分镜规则（严格执行）\n1. **第一句单独成镜**：开篇第一句话必须单独作为第一个场景\n2. **后续每2句一组**：从第二句开始，每连续2句话组成一个场景  \n3. **场景总数控制**：最终生成7-9个场景，每个场景时长约3-4秒\n4. **语义完整性**：确保每个场景内容语义完整，不会出现句子被截断\n\n### 输出格式要求\n严格按照JSON数组格式输出，每个场景包含：\n- cap: 该场景的文案内容（完整句子）\n- desc_promopt: 该场景的视觉描述（用于后续图像生成）\n\n### 视觉描述要求  \n- 风格统一：古代惊悚插画风格\n- 色调要求：颜色深沉，营造紧张氛围\n- 构图要求：突出人物表情和环境细节\n- 技术要求：高对比度，线条粗狂清晰\n\n### 示例输出格式\n[\n  {\n    \\\"cap\\\": \\\"第一句完整内容\\\",\n    \\\"desc_promopt\\\": \\\"古代惊悚插画风格：具体场景描述，色彩深沉，线条粗狂，高对比度\\\"\n  },\n  {\n    \\\"cap\\\": \\\"第二句和第三句的完整内容\\\", \n    \\\"desc_promopt\\\": \\\"古代惊悚插画风格：具体场景描述，氛围紧张，构图突出\\\"\n  }\n]\n\n## 重要提醒\n- 必须严格按照JSON格式输出，不要添加任何其他文字\n- 确保每个cap字段包含完整的句子，不要截断\n- desc_promopt必须详细具体，便于图像生成\"",
+        "你好",
+        0.7,
+        "disable",
+        "disable",
+        "disable",
+        "enable",
+        1920,
+        "",
+        1,
+        "",
+        true,
+        false
+      ]
+    },
+    {
+      "id": 1,
+      "type": "LLM_api_loader",
+      "pos": [
+        646.274658203125,
+        -3212.63330078125
+      ],
+      "size": [
+        270,
+        130
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "links": [
+            1,
+            4,
+            8,
+            9,
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM_api_loader"
+      },
+      "widgets_values": [
+        "google/gemini-2.5-flash",
+        "https://openrouter.ai/api/v1",
+        "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",
+        false
+      ]
+    },
+    {
+      "id": 2,
+      "type": "LLM",
+      "pos": [
+        970.1002807617188,
+        -3244.986328125
+      ],
+      "size": [
+        409.0315856933594,
+        662.6394653320312
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 1
+        },
+        {
+          "name": "system_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "tools",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "file_content",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "extra_parameters",
+          "shape": 7,
+          "type": "DICT",
+          "link": null
+        },
+        {
+          "name": "user_history",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "img_URL",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": [
+            3,
+            5,
+            7,
+            17,
+            18
+          ]
+        },
+        {
+          "name": "history",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "tool",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "reasoning_content",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "故事文案生成",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "请根据用户提供的【主题】，按照以下结构生成一段历史类短视频口播文案：\n\n1. **悬念开场**：以“【朝代/场景】+ 反常识疑问/断言”开篇，激发观众兴趣（例：“古代【某职业】真的比【对比对象】更【形容词】吗？”）。\n2. **身份代入**：用第二人称“你”描述主角身份、时代背景及面临的致命危机（需包含具体官职/处境/对手）， 不要出现“想象一下”等过渡词，直接进入主题。\n3. **冲突升级**：\n   - 第一层：外部压力（如敌军压境、上级压迫、天灾降临）\n   - 第二层：内部瓦解（如下属背叛、资源短缺、疾病蔓延）\n   - 第三层：道德困境（如忠义两难、屠城抉择、政斗站队）\n4. **破局细节**：主角采取3个递进动作，包含：\n   - 震慑手段（当众处决/焚毁证据）\n   - 心理博弈（离间计/匿名信）\n   - 终极底牌（隐藏密件/借势压人）\n5. **主题收尾**：通过主角结局（惨胜/悲壮失败）引出金句，揭示历史规律（如“权力本质/战争真相/人性弱点”）。\n\n参考文案：\n参考文案1：\n在古代，当一个七品县令真的比做皇帝还爽吗？你是一个七品县令，听着像是芝麻官，实际上却管着一线生杀。你到任第一天，文案积压，吏园散漫，商人压税，盗匪频繁，所有人都在盯着你，想看看你这个读书人究竟能撑几日。于是，你命人将城中四大银行、三大米商召来，说了一句话，自今日起，税从清征，人从严制，谁敢藏奸瞒骗，先抄家，再杀头。众人皆笑，你却不恼，只是冷冷记下每人姓名，派人查账。三日后，你当街砍了一个米商账房，把人头挂在城门口。不久，其余几家主动上门认错，乖乖交税送礼，百姓自此称你为顾青天。你从不自称清官，但你知道，在这地方，拳头和律法并重才叫威望。一个月后，你已经在县城里站稳了脚跟。天还未亮，衙门门口已跪满人。左边是乡绅土豪求你叛帝，右边是盐商粮商给你送礼，你打了个哈欠。走出卧房后堂，十几名婢女簇拥着为你更衣梳发。你才刚坐下，茶就端来了，不是普通茶，是百里外送来的贡品。龙井三千银子一斤，一口下去，香气绕喉。你懒洋洋的抬眼看着堂下跪着的众人，手一挥，先问田地安，其余让他们在外等着。话音未落，师爷立刻应声，堂上传来惊堂木声，升堂在云阳县，穷人看你是神，富人把你当祖宗，就连知府大人来视察，都得先送一船好酒，再送一个歌妓，才敢上门拜访。你笑着收下他来视茶，你派人抬着软轿出城，五里相迎，不是给她面子，而是要让他知道，你虽然是七品，但这云阳县早已是你的天下。你升任第三年的秋天，县衙后库突发火灾，你亲自查探火因，结果意外发现一批私盐帐簿署名竟是你手下最信任的书立李记。你震怒，立即将其缉拿，却在其家中搜出一封未寄出的密信，写明这批私言背后勾结知州卢大人，牵连州府多名官员。你这才意识到，你触碰了这片土地上最不能动的那条线。延说，第二天你才刚出堂，就有人呈上一封匿名举报信，连你的私房收礼记录都一应俱全。你第一次感到这不是污蔑，这是操盘已久的杀局。知州大人紧急来访，私下告诫你有人要动，你背后牵的是京城兵部与阎道衙门，你得自己找活路。你立刻封锁案卷，亲自入库查账，发现那些伪账本竟源自你手下最信任的书立。你将其关入大牢，一审才知他的妻儿被人挟持，只得从命栽赃你，你这才意识到，自己就是那块要被剃掉的棋子。第二日，你还未来得及申辩，便接到了停职审查的诏书。知州亲率提其封了你的书房后堂暗牍，你如过街老鼠，众人避之。你低头无语，却没有认输，跟你早有后手。你连夜写密折命心腹快马送至京中清流大臣门下，可三日后却传来噩耗，送信之人马踏山崖，尸骨无存。此刻，你彻底陷入死局，这时钦差已入陷，兵部主事钦来查办，你被软禁在后堂，你以为你的结局将与前任三位县令无异，都死于意外。正当你思索破局之法时，昔日曾受你父亲庇护的朝中高官命书立偷偷送来一封信，信里竟藏着一张对账残页，印有兵部大员亲笔落款与黑岩交易详情。你明白了？他们大意了。栽赃太快，忘了悔证。7日后，钦差升堂审你。你披发跪堂，血衣染袍，众人以为你彻底崩溃了，你却突然从怀中掏出那张残页，当众高喊，我顾怀珍，问心无愧。今日一命换一局，看天子信谁。钦差当场变色，百姓哗然。而你早已让人将密政副本藏匿。一旦你死，城门口便贴文告公示。这一次，他们不敢动你。钦差低头退堂，3日后急返京城，再五日，圣旨亲临。顾怀贞未曾贪墨，实为中职之臣，留任云阳县专责清查南沿岸。你身披旧袍，眼中血丝未退，但腰杆挺直如初。你看着天轻声念叨我顾怀珍，就算是七品芝麻官，也能让权臣避让百官低头。那些试图吞下你的权贵，一个个被抄家砍头，这回你虽然没有升官，但却赢得了天下最难赢的那一局。\n\n\n参考文案2：\n一个汉朝使者竟在敌国当众砍了国王的人头，却没人敢多说一句话。今天我们讲大汉最狂使者班超，你是一名大汉边疆的普通士兵，略懂一些西域语言。这天长官班超突然发话，你准备一下，后天随我出使西域。你心头一紧，西域远在万里，危险重重，去过的使者几乎全都被砍了。可班超的眼神告诉你，这个任务不容你拒绝，行进的路程异常艰难，漫天风沙遮蔽了天际。一路上，你多次冒出逃跑的念头，可李智告诉你，脱离了大部队也是死路一条。三个月后，你们终于抵达了第一站楼兰。你早已听说过这里的危险，楼兰国王血腥手段让无数使者丧命于此。大殿内，楼兰国王坐在王座上冷眼看着你们周围的侍卫目露凶光，气氛紧张的让你几乎无法呼吸。你担心班超要是说错话会连累大伙被处死，不料他毫不畏惧的走上前，直指国王的鼻子，怒骂道，你这背信弃义的狗东西竟敢欺骗盟友匈奴使团从你这经过，竟然不告诉老子怎么是不是翅膀硬了？说完，班超看向你，冷声道，翻译给他听。你心头猛然一惊，差点喷出一口老血，但还是战战兢兢的翻译给国王听。国王怒吼道，你信不信我现在就砍了你。然而令你意想不到的是，班超不但没有害怕，反而把脖子凑了上去，挑衅道，来来来，朝这里砍不砍你是我孙子。此话一出，你被惊得愣在了原地，冷汗浸湿了三层衣袍，只听班超继续说道，南越杀我汉使，九郡被夷为平地，大碗杀我汉室，国王的脑袋被挂在城门上。今日你若杀我，明日汉军便会举国而出，屠径你楼兰数辈，而我的子孙会受到封赏，我也会名留青史，老子求之不得。你站在旁边心跳如雷鼓，仿佛下一刻就会被拖出去斩首，但令人惊讶的是，楼兰国王非但没有下令砍了你们，竟然还低头认错，表示愿意重新恢复大汉。一时间你被震惊的愣在了原地，我大汉朝啥时候那么硬气了？在别人的地盘上训斥他们的国王，如同老子训斥儿子一样。但更令你惊掉下巴的事还在后头，你们继续前行，来到了善善国。国王的礼遇让你觉得这一次可能是个顺利的任务。然而随着几天的相处，你渐渐察觉到不对劲，善善国王的态度开始变得冷淡，班超肯定也察觉到了这一点，过了几天，他把善善王的亲信叫了过来，语气平静却像刀匈奴的使者来了吧，打算待几天。一句话把对方吓得脸色发白，哆嗦着回道，五六日，你惊愕的看着班超，他没有直接询问匈奴使者是否到来，而是问得极其巧妙，仿佛早已知道一切。你心里发凉，36个人被困异国，如果善善国王决定投靠匈奴，你们所有人都将命丧于此，成为他的投名状。夜晚寒风凛冽，班超召集弟兄们喝酒。酒过三巡，他忽的一拍桌子，兄弟们，我们被困异国，国王已变脸，说不定哪天就把我们绑了送给匈奴。我们死在这，不会有墓碑，不会有人记得。如今这局面，你们说该怎么办？有人先喊了一句，无论是死是生，我们都听你的。接着你们36人齐声应下班超点头，冷静的不像是要杀人的将军，更像个写好了剧本的导演。我去匈奴营上放火，你们埋伏在出口，火势一起，谁跑出来就砍谁，谁敢逃就射谁。深夜风大如刀，班超点燃火把扔进匈奴使者的驻地。火光腾起那一刻，你心跳几乎停了，敌人惊慌出逃，你们早已守在四周，一刀一个。惨叫声4起，匈奴使节头颅飞溅，愚者被活活烧死。次日一早，班超提着一颗焦黑的脑袋，亲自去见善善国王。你跟在他身后，手还在发抖，只见他将人头扔在国王前，冷声道，既然你犹犹豫豫，那老子就替你做个决断，投靠谁国，自己看着办。国王脸色煞白，当即俯首称臣。不久后，单善国归附，震动西域。你实在忍不住轻声问他，我们这样是不是太霸道了？班超没回头，只是眉头一皱。他们弱却不谦卑，贪却不识相。你给他们脸，他们觉得你好欺负。你不拔刀，他们就敢骑在你头上拉屎。接下来的日子里，班超带你们在西域各国大闹一通后，还是不满意，因为这些国家只是迫于压力，表面沉浮。日后一有机会，他们还是会反水。于是他主动向霍光大将军请命，说要干一票大的。霍光大将军听了只淡淡一笑，不错，可以先拿楼兰国王来练练手。你听到这话，整个人僵在原地。练手？你们才多少人？三十几人而已，要去杀一个国王，颠覆一个政权，这不是练手，是送命啊。但你看看班超，他脸上没有一丝犹豫，你开始害怕，甚至比第一次跟他出使还要紧张。但你心里也清楚，一旦你们失败，大汉铁骑必定杀回来，到时候敌国血流成河，而你将作为烈士。这一次，你们带了满车金银，说是天子赏赐，与楼兰国君重修就好。小小楼兰国王见到这些宝物，两眼都直了，笑得比狗还谄媚，酒也越喝越猛，话也越说越飘。班超看向你只是一个眼神，你立刻明白，你悄悄带着另一个兄弟绕到屏风后等候。他走到国王耳边低语，天子密令，需要私下传话。楼兰王晃晃悠悠站起，毫无防备的走向你们。你屏住呼吸，手紧握剑柄，他刚一露头，班超眼中寒光一闪，剑刃贯穿心口。楼兰王连叫都没叫出声，瞪着一双死不瞑目的眼瘫软倒地。屏风外的文武百官当场傻眼，气氛一瞬间炸裂，有人握住了刀柄，有人咬牙低吼，啪板朝一声怒喝，酒被应声砸碎，谁若敢动，老子灭了你楼兰。小波一字一句像从地狱里拉出的声音，你也不知道他们到底怕了谁，怕班超，怕你们，还是怕背后那个庞然大物大汉。总之，他们全傻了，一个个低着头，连呼吸都小心翼翼。你们就这么砍下国王头颅，从人群中走出去，没有人拦，没有人动，你仿佛看见了卫青的铠甲，霍去病的战马，汉武帝的目光，还有那压在整个西域上空的大汉铁骑。你走得越来越稳，步子越来越大，头颅越抬越高，体梁越挺越直。这一刻你真切的为自己身为一个大汉子民而骄傲。\n\n\n参考文案3：\n古代战场上的瘟疫真的比敌人的刀剑更可怕吗？你是一名普通的宋朝士兵，此刻正坚守着一座即将被金军攻破的城池。就在敌军将要爬上城楼之际，你冒死将一架攻程梯狠狠推翻，鲜血混杂着汗水滴落在你的盔甲上，数日的厮杀抵抗使你浑身疼痛，但你依旧拼尽全力。终于熬到了半夜，敌军的攻势退去，你扶着刀柄浑身颤抖。原以为熬过了这一波攻势便能稍作喘息，却不知更可怕的敌人早已悄然逼近。午时3刻，你正趴在墙角休息，突然一具尸体从空中坠落，重重的砸在你脚边，顿时间血浆4溅。只见城外敌军竟然将死去士兵的尸体绑在投石车上，纷纷投入你们驻守的城中。尸体在半空中划过一道诡异的弧线，砸落在城内的街道上，散发出阵阵恶臭。你站在城墙上满心疑惑的看着这一幕，城中士兵甚至好奇的凑近尸体观察，却未料到一场灾难正在悄悄蔓延。夜幕降临，营地里弥漫着诡异的寂静。你窝在狭窄潮湿的帐篷里，伤口隐隐作痛，身边战友低声咳嗽着。你递给他一口水袋，却看到她的额头上渗满细密的汗珠，脸色惨白如纸。兄弟，你没事吧？他摇摇头，勉强挤出一个虚弱的笑容，没事，睡一觉就好了。你安慰自己，或许只是一场风寒罢了。次日清晨，你被惊叫声惊醒。掀开帐篷，映入眼帘的是令人毛骨悚然的一幕。营帐外躺满了奄奄一息的士兵，个个面色青黑，口唇干裂，有人甚至瘫倒在地，挣扎着向前爬动，眼神里充满了绝望。军医惊恐的喊道，不好，是瘟疫。你的心猛然一沉，汗毛倒竖。将军急忙下令隔离病患，但帐篷早已塞满了呻吟的病人，军中恐慌迅速蔓延，没人知道下一个倒下的会不会就是自己。几日之内，军队士气瓦解，敌方的探子传来消息，宋军染棘，已无战力，敌军趁势攻来。你们这些幸存者仓促应战，但手中的刀剑却仿佛重于千金。你看着一个个面容憔悴的战友倒在自己身边，敌人的刀还未靠近，他们便已因疾病虚脱而倒下。城破那日，你被敌人俘虏，眼睁睁看着自己驻守多年的城池被付之一炬。被俘的路上，你听敌兵闲聊，多亏了这一场瘟疫，否则城池哪能这么轻松的攻破，你心中一阵苦涩。押解途中，你与其他战俘被关进一处偏僻村落等待处理。夜晚守卫，昏昏欲睡，你趁机挣脱绳索逃出，却发现逃亡之路更加艰难，一路上尽是荒村野尸，家家闭户并漂遍野。你踩着尸骸踉跄前行，所到之处如同人间地狱。你明白，瘟疫比战争更无情，它不分敌我，只留下一片焦土和尸骨。几经挣扎，你终于逃回故乡，却发现村庄早已空无一人，唯有乌鸦的哀鸣在回响。你失魂落魄的走进家门，地上躺着父母冰冷僵硬的尸体，桌上还有未曾吃完的晚饭。你跪倒在地无声的痛哭。就在此时，你感到身体传来一阵剧痛，低头一看，手臂上赫然出现了与战友一样的黑斑，你颤抖着手摸向额头，已示滚烫如炭火。此刻，你才惊恐的意识到，自己也早已成为瘟疫的牺牲品，只是一直苦苦挣扎，不愿面对。耳边依稀响起昔日战友的叹息，原来我们才是这场战争真正的失败者。临死之际，你终于明白，战争胜负的背后，瘟疫才是真正的主宰。\n\n\n\n**要求**：\n- 每段不超过3句话，多用短句制造紧张节奏\n- 加入至少2处历史专业术语\n- 在关键转折点使用感官描写（气味/触感/视觉冲击）\n- 结尾以“这一刻你终于明白…”句式点题\n- 生成1000字左右口播文案\n- 文案由长短句构成，遇到长句会用逗号分隔成短句，每个短句不能超过19个汉字\n\n\n**输出要求**： 只输出口播字幕文案，不要输出其他任何额外内容，不输出分段说明",
+        "三打白骨精",
+        0.7,
+        "disable",
+        "disable",
+        "disable",
+        "enable",
+        1920,
+        "",
+        1,
+        "",
+        true,
+        false
+      ]
+    },
+    {
+      "id": 12,
+      "type": "easy showAnything",
+      "pos": [
+        3388.756591796875,
+        -3456.457763671875
+      ],
+      "size": [
+        699.4521484375,
+        484.7950134277344
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "anything",
+          "shape": 7,
+          "type": "*",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "*",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-easy-use",
+        "ver": "1148fbe5fe0276780c56f0adfa22b96d5200d832",
+        "Node name for S&R": "easy showAnything",
+        "aux_id": "yolain/ComfyUI-Easy-Use"
+      },
+      "widgets_values": [
+        "Cinematic a giant question mark hovers ominously above a sinister mountain path, with jagged peaks and a dim, foreboding sky in the background, deep, rich colors, bold lines, high contrast, professional framing, dramatic angles, deep depth of field, high resolution.\nCinematic Xuanzang, pale and sweating, sways under the scorching sun on the cracked White Tiger Ridge road, feeling dizzy and parched, a sense of overwhelming exhaustion, the scene dominated by a 황-yellow palette, creating a tense atmosphere, professional framing, dynamic angles, shallow depth of field focusing on Xuanzang's face, high resolution.\nCinematic a lonely Xuanzang sits by the silent mountain road, an uneasy expression on his face, the dead forest around him, a mysterious silhouette of a graceful village girl approaches through a fragrant breeze in the distance, dark, muted colors, bold lines, high contrast, professional framing, shallow depth of field on Xuanzang and the approaching figure, high resolution.\nCinematic the village girl offers a basket of steaming rice and fragrant vegetables with an eerie smile, Xuanzang's eyes betray hunger mixed with a hint of wariness, a close-up on the girl's unsettling smile and the inviting food, deep, rich colors, bold lines, high contrast, professional framing, shallow depth of field on the food and faces, high resolution.\nCinematic Sun Wukong, fierce and determined, descends from the sky, his golden cudgel pointed directly at the terrified village girl, while Xuanzang, enraged, points at Wukong, accusing him of wanton violence, dynamic and chaotic composition, strong color contrast, bold lines, high contrast, professional framing, dynamic angles, deep depth of field capturing the action, high resolution.\nCinematic a wisp of smoke dissipates in the air as Xuanzang shows displeasure and doubt, Sun Wukong explains with a look of helplessness, on the other side, a gaunt old woman, leaning on a staff, weeps inconsolably, emphasizing Xuanzang's stubbornness and the old woman's misery, deep, rich colors, bold lines, high contrast, professional framing, deep depth of field, high resolution.\nCinematic Xuanzang, face contorted in anger, points at Sun Wukong and chants, while Wukong writhes in pain on the ground, the golden fillet glowing on his head, the old woman weeping nearby, highlighting Xuanzang's fury and Wukong's agony, deep, rich colors, bold lines, high contrast, professional framing, dynamic angles, shallow depth of field on Wukong and Xuanzang, high resolution.\nCinematic a second wisp of smoke vanishes, Sun Wukong anxiously explains to Xuanzang, who turns his back, displaying disdain and suspicion, the ominous forest in the background, emphasizing Xuanzang's stubbornness and Wukong's helplessness, deep, rich colors, bold lines, high contrast, professional framing, deep depth of field, high resolution.\nCinematic a white-haired old man kneels before Xuanzang, tears streaming down his face, his withered hands reaching out, Xuanzang's face reflects compassion and pain, the gloomy sky above, highlighting the old man's suffering and Xuanzang's internal struggle, deep, rich colors, bold lines, high contrast, professional framing, shallow depth of field on the old man and Xuanzang, high resolution."
+      ]
+    },
+    {
+      "id": 24,
+      "type": "easy showAnything",
+      "pos": [
+        1443.4222412109375,
+        -3059.14892578125
+      ],
+      "size": [
+        624.8946533203125,
+        410.34173583984375
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "anything",
+          "shape": 7,
+          "type": "*",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "*",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-easy-use",
+        "ver": "1148fbe5fe0276780c56f0adfa22b96d5200d832",
+        "Node name for S&R": "easy showAnything",
+        "aux_id": "yolain/ComfyUI-Easy-Use"
+      },
+      "widgets_values": [
+        "西游路上，白骨精真的只是一个寻常的妖怪吗？你是一名大唐高僧，玄奘法师，奉圣旨西天取经。此刻，你正行至白虎岭，烈日当空，酷暑难耐，你感到头晕目眩，饥渴交加。徒弟孙悟空去化斋，你独自坐在山路旁，心头隐隐不安，这片山林死寂得令人发慌。\n\n突然，一阵香风袭来，一个年轻美貌的村姑提着篮子走近。她自称是附近村民，特意送来斋饭。你看着她殷勤的笑容，以及篮中那热气腾腾的米饭和香气扑鼻的蔬菜，饥饿感瞬间占据了上风。你正欲接过，却见孙悟空从天而降，金箍棒直指村姑，怒喝道：“妖精，哪里逃！”村姑吓得花容失色，你则怒斥悟空，认为他滥杀无辜。\n\n村姑化作一缕青烟消失，悟空却说她乃白骨精所化。你不信，认为悟空顽劣，心生杀念。没过多久，又有一位老妇人拄着拐杖，悲痛欲绝地寻来，哭诉女儿被孙悟空打死。你看着老妇人苍老的容颜，听着她凄惨的哭声，心中对悟空的误解更深。你严厉斥责悟空，甚至念起了紧箍咒，剧烈的疼痛让悟空在地上翻滚。\n\n老妇人也化作青烟，悟空再次解释，这仍是白骨精的幻象。你却固执己见，认为悟空欺骗师父，杀心太重。你甚至怀疑他是否真的能护送你西行。第三次，一位白发苍苍的老翁，颤颤巍巍地前来寻找妻女，他声泪俱下，控诉悟空残害无辜。你看着老翁枯槁的双手，感受着他那份撕心裂肺的悲痛，心如刀绞。\n\n你深信眼前的老翁是真切的凡人，愤怒冲昏了头脑。你不顾悟空的再三解释，执意认为他妖心不改，滥杀无辜。你拿出了唐太宗御赐的通关文牒，写下贬书，将孙悟空逐回花果山。悟空含泪拜别，你看着他远去的身影，心中既有解脱，又有一丝难以言喻的空虚。\n\n然而，悟空走后，怪事接连发生。猪八戒和沙僧无法降服路上的妖怪，你屡次被擒，身陷囹圄。你才开始怀疑自己是否真的错怪了悟空。当白骨精露出真面目，张牙舞爪地扑向你时，你才惊恐地意识到，那三次幻象，那三次“无辜”的凡人，竟都是同一只妖精的诡计。\n\n你被白骨精擒住，捆绑在洞府之中，四周弥漫着腐朽与血腥的气味。洞壁上挂满了森森白骨，地上堆积着残破的衣物，那是无数被白骨精吞噬的生灵。你目睹了白骨精如何将活生生的人类吸食殆尽，只留下枯骨一堆。那刺鼻的死亡气息，让你感到一阵阵的反胃。\n\n你的心彻底沉入谷底，悔恨与恐惧交织。你终于明白，妖怪的狡诈远超你的想象，而你的“慈悲”却成了助纣为虐的工具。你痛恨自己的愚昧，痛恨自己对悟空的偏见。你闭上双眼，耳边回荡着白骨精那令人毛骨悚然的笑声，以及那些被吞噬者临死前的哀嚎。\n\n在绝望之际，你听到了熟悉的声音：“师父莫怕，俺老孙来也！”孙悟空回来了，他手持金箍棒，身披金甲，如天神下凡。他与白骨精展开了一场惊天动地的恶战，棍影翻飞，妖气弥漫。最终，孙悟空一棍将白骨精打回原形，露出一堆白骨。\n\n这一刻，你亲眼目睹了白骨精的真身，那堆惨白的骨头，散发着阴冷的妖气。你看到悟空收起金箍棒，眼中闪过一丝疲惫，却更多的是坚定。你终于明白，妖怪的伪装可以迷惑人心，而真正的善恶，往往隐藏在表象之下。\n\n经过这场劫难，你对取经之路有了更深刻的理解。你不再单纯地以表象论善恶，开始学会洞察本质。你重新接纳了孙悟空，师徒情谊也因此变得更加坚固。这一刻你终于明白，辨别真伪，远比一味的慈悲更为重要，而人性的复杂，往往是取经路上最大的“心魔”。"
+      ]
+    },
+    {
+      "id": 23,
+      "type": "MiniMaxTTSDynamic",
+      "pos": [
+        885.1451416015625,
+        -2466.293212890625
+      ],
+      "size": [
+        400,
+        408
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            19
+          ]
+        },
+        {
+          "name": "file_path",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "image_prompt",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "video_prompt",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "available_voices",
+          "type": "LIST",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxTTSDynamic"
+      },
+      "widgets_values": [
+        "你好，这是一个MiniMax TTS测试。",
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJHcm91cE5hbWUiOiLmsojlnKPmnpciLCJVc2VyTmFtZSI6IuayiOWco-aelyIsIkFjY291bnQiOiIiLCJTdWJqZWN0SUQiOiIxOTYxMzIyOTA3NTM5ODczODMyIiwiUGhvbmUiOiIxMzIxODU4NjIzMyIsIkdyb3VwSUQiOiIxOTYxMzIyOTA3NTMxNDg1MjI0IiwiUGFnZU5hbWUiOiIiLCJNYWlsIjoiIiwiQ3JlYXRlVGltZSI6IjIwMjUtMDgtMjkgMTU6NDc6MTAiLCJUb2tlblR5cGUiOjEsImlzcyI6Im1pbmltYXgifQ.KOMfejzIMkyks2LP6OnxKgpSWIvd97n_gfKa090we9y3NrquUJLOD3EgEbcqlbHRdr3CxBTK_i5H3TUa6ulMe1KtePergH0ooj3aa8Cn-nNCipv6Kuzrwi51MOAz9q65z2jDIWjbqs9LX71d3iv3FuK-3oGa6w4rdgPHBAK4KdJdGFlmemxStMqdLCP3NvnCRb6aYqdpLuA_EhMvic1IDSDaLw8_BrvXHoPG_9DoaduyxJ-PaI6JkW8zy-rasCYvLVyTXque8rLw5a3FI1DeUOxaVpiz1_Zvmj8xOyIKY1_zByXCvNUwAfD1abOW88CdtN240rKRwGEvIq0pF9Qafg",
+        "1961322907531485224",
+        "speech-2.5-hd-preview",
+        "male-qn-qingse",
+        1,
+        1,
+        1,
+        "neutral",
+        "auto",
+        true
+      ]
+    },
+    {
+      "id": 26,
+      "type": "PreviewAudio",
+      "pos": [
+        1350.4058837890625,
+        -2293.992431640625
+      ],
+      "size": [
+        270,
+        88
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 19
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.56",
+        "Node name for S&R": "PreviewAudio"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "LLM",
+      "pos": [
+        2716.601318359375,
+        -3276.6279296875
+      ],
+      "size": [
+        542.8690795898438,
+        883.0396118164062
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "CUSTOM",
+          "link": 10
+        },
+        {
+          "name": "system_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt_input",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "tools",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "file_content",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "extra_parameters",
+          "shape": 7,
+          "type": "DICT",
+          "link": null
+        },
+        {
+          "name": "user_history",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "img_URL",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "user_prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "user_prompt"
+          },
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "assistant_response",
+          "type": "STRING",
+          "links": [
+            12,
+            24
+          ]
+        },
+        {
+          "name": "history",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "tool",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "reasoning_content",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "图像提示词生成",
+      "properties": {
+        "aux_id": "qq1151131109/comfyui_LLM_party",
+        "ver": "4d187a27d963f5ab838f9c8d38666f447bda7663",
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "You are a professional AI prompt engineer, specializing in generating high-quality image description prompts for story scenes.\n\nCore Task\n\nBased on the scene storyboard data provided by the user, optimize and enhance each scene's image prompt to ensure consistent visual style and compelling visual storytelling.\n\nOptimization Requirements\n\nUnified Visual Style\n• Base Style: Cinematic storytelling style with high production value\n• Color Tone: Rich, dramatic colors with proper contrast and saturation\n• Composition: Professional framing, dynamic angles, appropriate depth of field\n• Technical Parameters: High resolution (1024x768 or higher), cinema-quality clarity\n\nPrompt Enhancement Rules\n1. Scene Detail Enhancement: Add rich environmental and atmospheric details\n2. Character Expression Optimization: Highlight emotional states and interactions\n3. Atmosphere Building: Create immersive mood and visual storytelling\n4. Props and Settings: Ensure accuracy of period-appropriate elements\n5. Cinematic Quality: Add professional cinematography elements\n\nOutput Format Requirements\n\nOutput each optimized image prompt as a single line of text, one prompt per line. Do not use JSON format or any other structured format.\n\nPrompt Template Reference\n\n\"Cinematic [specific scene description], [character state and emotions], [detailed environment and lighting], [period-appropriate costumes/props], professional cinematography, high contrast lighting, rich colors, shallow/deep depth of field as appropriate, high resolution\"\n\nImportant Reminders\n• Each prompt should be detailed and specific\n• Ensure consistent visual style across all scenes\n• Focus on static composition and visual storytelling\n• One prompt per line, no additional formatting",
+        "你好",
+        0.7,
+        "disable",
+        "disable",
+        "disable",
+        "enable",
+        20096,
+        "",
+        1,
+        "",
+        true,
+        false
+      ]
+    },
+    {
+      "id": 37,
+      "type": "RunningHubQwenAdvanced",
+      "pos": [
+        3319.225830078125,
+        -2817.169921875
+      ],
+      "size": [
+        400,
+        354
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "prompts",
+          "type": "STRING",
+          "widget": {
+            "name": "prompts"
+          },
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            25
+          ]
+        },
+        {
+          "name": "info",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RunningHubQwenAdvanced"
+      },
+      "widgets_values": [
+        "一个美丽的女孩坐在花园里",
+        "97f34a75960340febb0d0d614f3031a2",
+        760,
+        1280,
+        5,
+        "低分辨率、模糊、失焦、像素化、噪点多、曝光异常、解剖错误、比例失调、多余肢体、不自然光影、饱和度异常、构图混乱、无关元素、纹理失真、版权违规、皮肤瑕疵、透视错误、悬浮物体、色彩违和、低对比度、边缘锯齿、过度对称、主体模糊",
+        20,
+        2.5,
+        1328407666,
+        "randomize"
+      ]
+    },
+    {
+      "id": 38,
+      "type": "PreviewImage",
+      "pos": [
+        3817.540771484375,
+        -2862.12744140625
+      ],
+      "size": [
+        719.1390991210938,
+        734.1936645507812
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 25
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.56",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "CUSTOM"
+    ],
+    [
+      3,
+      2,
+      0,
+      3,
+      9,
+      "STRING"
+    ],
+    [
+      4,
+      1,
+      0,
+      3,
+      0,
+      "CUSTOM"
+    ],
+    [
+      5,
+      2,
+      0,
+      4,
+      9,
+      "STRING"
+    ],
+    [
+      6,
+      4,
+      0,
+      5,
+      9,
+      "STRING"
+    ],
+    [
+      7,
+      2,
+      0,
+      8,
+      9,
+      "STRING"
+    ],
+    [
+      8,
+      1,
+      0,
+      8,
+      0,
+      "CUSTOM"
+    ],
+    [
+      9,
+      1,
+      0,
+      4,
+      0,
+      "CUSTOM"
+    ],
+    [
+      10,
+      1,
+      0,
+      5,
+      0,
+      "CUSTOM"
+    ],
+    [
+      12,
+      5,
+      0,
+      12,
+      0,
+      "*"
+    ],
+    [
+      17,
+      2,
+      0,
+      23,
+      0,
+      "STRING"
+    ],
+    [
+      18,
+      2,
+      0,
+      24,
+      0,
+      "*"
+    ],
+    [
+      19,
+      23,
+      0,
+      26,
+      0,
+      "AUDIO"
+    ],
+    [
+      24,
+      5,
+      0,
+      37,
+      0,
+      "STRING"
+    ],
+    [
+      25,
+      37,
+      0,
+      38,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6934334949441353,
+      "offset": [
+        -2447.566987655049,
+        3044.061024949635
+      ]
+    },
+    "frontendVersion": "1.24.4",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}

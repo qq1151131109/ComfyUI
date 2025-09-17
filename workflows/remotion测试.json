@@ -1,0 +1,373 @@
+{
+  "id": "6ddbf8c1-3363-4fbf-91a6-1a36a5d6c371",
+  "revision": 0,
+  "last_node_id": 32,
+  "last_link_id": 29,
+  "nodes": [
+    {
+      "id": 28,
+      "type": "Apply WhisperX Alignment",
+      "pos": [
+        7254.63623046875,
+        1406.989013671875
+      ],
+      "size": [
+        400,
+        220
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "aligned_text",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "segments_alignment",
+          "type": "whisper_alignment",
+          "links": null
+        },
+        {
+          "name": "words_alignment",
+          "type": "whisper_alignment",
+          "links": [
+            26
+          ]
+        },
+        {
+          "name": "process_log",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "qq1151131109/ComfyUI-Whisper",
+        "ver": "dc726b44bffadb0e92879f5de221139e46a70bfd",
+        "Node name for S&R": "Apply WhisperX Alignment"
+      },
+      "widgets_values": [
+        "Using remotions TikTok template, you can create engaging reels and TikToks by transcribing your audio using Vespers CPP and animating your captions with React.",
+        "base",
+        "auto",
+        false
+      ]
+    },
+    {
+      "id": 27,
+      "type": "VHS_LoadVideo",
+      "pos": [
+        6803.6943359375,
+        1315.5848388671875
+      ],
+      "size": [
+        286.325927734375,
+        797.57958984375
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "meta_batch",
+          "name": "meta_batch",
+          "shape": 7,
+          "type": "VHS_BatchManager",
+          "link": null
+        },
+        {
+          "label": "vae",
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "label": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            25
+          ]
+        },
+        {
+          "label": "frame_count",
+          "name": "frame_count",
+          "type": "INT"
+        },
+        {
+          "label": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            24,
+            29
+          ]
+        },
+        {
+          "label": "video_info",
+          "name": "video_info",
+          "type": "VHS_VIDEOINFO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-videohelpersuite",
+        "ver": "1.7.4",
+        "Node name for S&R": "VHS_LoadVideo",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": {
+        "video": "sample-video.mp4",
+        "force_rate": 25,
+        "custom_width": 0,
+        "custom_height": 0,
+        "frame_load_cap": 0,
+        "skip_first_frames": 0,
+        "select_every_nth": 1,
+        "format": "Wan",
+        "choose video to upload": "image",
+        "videopreview": {
+          "paused": false,
+          "hidden": false,
+          "params": {
+            "custom_height": 480,
+            "filename": "sample-video.mp4",
+            "force_rate": 25,
+            "select_every_nth": 1,
+            "frame_load_cap": 0,
+            "format": "video/mp4",
+            "skip_first_frames": 0,
+            "type": "input"
+          }
+        }
+      },
+      "color": "#322",
+      "bgcolor": "#533",
+      "shape": 1
+    },
+    {
+      "id": 30,
+      "type": "VHS_VideoCombine",
+      "pos": [
+        8277.8388671875,
+        1234.410400390625
+      ],
+      "size": [
+        409.3715515136719,
+        1040.216064453125
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 27
+        },
+        {
+          "label": "audio",
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 29
+        },
+        {
+          "label": "meta_batch",
+          "name": "meta_batch",
+          "shape": 7,
+          "type": "VHS_BatchManager",
+          "link": null
+        },
+        {
+          "label": "vae",
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "label": "Filenames",
+          "name": "Filenames",
+          "type": "VHS_FILENAMES",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-videohelpersuite",
+        "ver": "1.7.4",
+        "Node name for S&R": "VHS_VideoCombine",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": {
+        "frame_rate": 25,
+        "loop_count": 0,
+        "filename_prefix": "数字人090401",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 19,
+        "save_metadata": false,
+        "trim_to_audio": false,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {
+          "paused": false,
+          "hidden": false,
+          "params": {
+            "filename": "数字人090401_00009.mp4",
+            "workflow": "数字人090401_00009.png",
+            "fullpath": "/shenglin/ComfyUI/output/数字人090401_00009.mp4",
+            "format": "video/h264-mp4",
+            "subfolder": "",
+            "type": "output",
+            "frame_rate": 25
+          }
+        }
+      },
+      "color": "#232",
+      "bgcolor": "#353",
+      "shape": 1
+    },
+    {
+      "id": 29,
+      "type": "Render Remotion Captions",
+      "pos": [
+        7742.5517578125,
+        1333.5750732421875
+      ],
+      "size": [
+        464.374755859375,
+        350.0582275390625
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 25
+        },
+        {
+          "name": "alignment",
+          "type": "whisper_alignment",
+          "link": 26
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            27
+          ]
+        },
+        {
+          "name": "video_path",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "render_log",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "subtitle_coord",
+          "type": "subtitle_coord",
+          "links": null
+        },
+        {
+          "name": "render_log",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "qq1151131109/ComfyUI-Whisper",
+        "ver": "dc726b44bffadb0e92879f5de221139e46a70bfd",
+        "Node name for S&R": "Render Remotion Captions"
+      },
+      "widgets_values": [
+        25,
+        "elastic_zoom",
+        100,
+        800000,
+        1
+      ]
+    }
+  ],
+  "links": [
+    [
+      24,
+      27,
+      2,
+      28,
+      0,
+      "AUDIO"
+    ],
+    [
+      25,
+      27,
+      0,
+      29,
+      0,
+      "IMAGE"
+    ],
+    [
+      26,
+      28,
+      2,
+      29,
+      1,
+      "whisper_alignment"
+    ],
+    [
+      27,
+      29,
+      0,
+      30,
+      0,
+      "IMAGE"
+    ],
+    [
+      29,
+      27,
+      2,
+      30,
+      1,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8140274938684012,
+      "offset": [
+        -6772.804997900106,
+        -1169.1197797961024
+      ]
+    },
+    "frontendVersion": "1.24.4",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
